@@ -4,6 +4,12 @@
 
 Une application web moderne et intuitive pour gérer, organiser et suivre vos cas de test avec une interface responsive et des fonctionnalités avancées d'export/import.
 
+## 🌐 Application en Ligne
+
+**🚀 [Tester l'application directement](https://mickadam.github.io/Test-Case-Tracker/)**
+
+L'application est déployée sur GitHub Pages et accessible immédiatement sans installation !
+
 ## ✨ Fonctionnalités Principales
 
 ### 🎯 Gestion des Jeux de Test

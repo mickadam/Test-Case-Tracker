@@ -655,6 +655,62 @@
         .count-success { color: #27ae60; }
         .count-error { color: #e74c3c; }
         .count-warning { color: #f39c12; }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px 0;
+            margin-top: 40px;
+            text-align: center;
+            border-top: 3px solid #3498db;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #ecf0f1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .footer-text {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -741,7 +797,30 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://github.com/mickadam/Test-Case-Tracker" target="_blank" class="footer-link">
+                    <span>🔗</span>
+                    <span>Code Source</span>
+                </a>
+                <a href="https://github.com/mickadam/Test-Case-Tracker/blob/main/LICENSE" target="_blank" class="footer-link">
+                    <span>📄</span>
+                    <span>Licence CC0-1.0</span>
+                </a>
+                <a href="https://github.com/mickadam/Test-Case-Tracker" target="_blank" class="footer-link">
+                    <span>⭐</span>
+                    <span>Star sur GitHub</span>
+                </a>
+            </div>
+            <p class="footer-text">
+                Développé avec ❤️ pour simplifier le suivi de vos cas de test
+            </p>
+        </div>
+    </footer>
+    
     <script>
         let testCases = [];
         let savedSteps = new Set();
