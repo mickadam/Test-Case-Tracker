@@ -78,7 +78,7 @@ Test-Case-Tracker/
 │   └── AGENTS.md          # Architecture et agents
 ├── assets/                 # Ressources statiques
 ├── .github/
-│   └── workflows/         # GitHub Actions pour déploiement
+│   └── workflows/         # GitHub Actions pour déploiement automatique
 ├── 404.html               # Page d'erreur personnalisée
 ├── DEPLOYMENT.md          # Guide de déploiement GitHub Pages
 ├── README.md              # Ce fichier

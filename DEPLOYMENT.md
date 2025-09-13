@@ -17,19 +17,15 @@
    - Cliquer sur `Save`
    - Votre site sera disponible à : `https://votre-username.github.io/Test-Case-Tracker/`
 
-### 2. Workflows GitHub Actions
+### 2. Workflow GitHub Actions
 
-Le projet inclut deux workflows automatiques :
+Le projet inclut un workflow automatique :
 
 #### Workflow Principal (`pages.yml`)
 - **Déclencheur** : Push sur la branche `main`
 - **Action** : Déploiement automatique vers GitHub Pages
 - **Permissions** : Configurées automatiquement
-
-#### Workflow Alternatif (`deploy.yml`)
-- **Déclencheur** : Push sur `main` ou Pull Request
-- **Action** : Déploiement vers branche `gh-pages`
-- **Utilisation** : Si vous préférez déployer depuis une branche dédiée
+- **Méthode** : Moderne et recommandée par GitHub
 
 ### 3. Structure des Fichiers
 

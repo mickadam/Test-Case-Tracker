@@ -537,6 +537,124 @@
             margin-bottom: 20px;
             border-left: 4px solid #27ae60;
         }
+
+        /* Styles pour le modal des statistiques */
+        .stats-modal {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10000;
+        }
+
+        .stats-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .stats-header h2 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .stat-card.error {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stat-card.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .stats-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .stats-details h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .test-suite-stats {
+            margin-bottom: 20px;
+        }
+
+        .test-suite-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .test-suite-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .test-suite-counts {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+        }
+
+        .count-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .count-success { color: #27ae60; }
+        .count-error { color: #e74c3c; }
+        .count-warning { color: #f39c12; }
     </style>
 </head>
 <body>
@@ -1008,6 +1126,7 @@
             function saveResult() {
                 const newResult = input.value.trim();
                 testCase.result = newResult;
+                testCase.lastModified = new Date().toISOString(); // Ajouter timestamp de modification
                 saveData();
                 updateDisplay();
             }
@@ -1037,6 +1156,7 @@
             const nextIndex = (currentIndex + 1) % statusCycle.length;
             
             testCase.status = statusCycle[nextIndex];
+            testCase.lastModified = new Date().toISOString(); // Ajouter timestamp de modification
             updateDisplay();
             saveData();
         }
@@ -1407,7 +1527,182 @@
 
         // Fonctions pour les statistiques (manquantes)
         function showTestSuiteStats() {
-            alert('Fonction statistiques en développement...');
+            // Calculer les statistiques
+            const stats = calculateTestStats();
+            
+            // Créer le modal
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.style.cssText = `
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                background: rgba(0, 0, 0, 0.5) !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                z-index: 9999 !important;
+            `;
+            
+            const modal = document.createElement('div');
+            modal.className = 'stats-modal';
+            modal.innerHTML = `
+                <div class="stats-header">
+                    <h2>📊 Statistiques des Tests</h2>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card info">
+                        <div class="stat-number">${stats.totalTests}</div>
+                        <div class="stat-label">Total des Tests</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-number">${stats.successCount}</div>
+                        <div class="stat-label">Tests Réussis</div>
+                    </div>
+                    <div class="stat-card error">
+                        <div class="stat-number">${stats.errorCount}</div>
+                        <div class="stat-label">Tests Échoués</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-number">${stats.pendingCount}</div>
+                        <div class="stat-label">Tests En Cours</div>
+                    </div>
+                </div>
+                
+                <div class="stats-details">
+                    <h3>📈 Taux de Réussite</h3>
+                    <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 2em; font-weight: bold; color: #27ae60;">${stats.successRate}%</div>
+                        <div style="color: #666;">de tests réussis</div>
+                    </div>
+                    
+                    <h3>🎯 Répartition par Jeu de Test</h3>
+                    <div class="test-suite-stats">
+                        ${stats.testSuiteStats.map(suite => `
+                            <div class="test-suite-item">
+                                <div class="test-suite-name">${suite.name}</div>
+                                <div class="test-suite-counts">
+                                    <div class="count-item">
+                                        <span>✅</span>
+                                        <span class="count-success">${suite.success}</span>
+                                    </div>
+                                    <div class="count-item">
+                                        <span>❌</span>
+                                        <span class="count-error">${suite.error}</span>
+                                    </div>
+                                    <div class="count-item">
+                                        <span>⏳</span>
+                                        <span class="count-warning">${suite.pending}</span>
+                                    </div>
+                                    <div class="count-item">
+                                        <span>📊</span>
+                                        <span>${suite.total}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <h3>📅 Activité Récente</h3>
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span><strong>Tests créés aujourd'hui :</strong></span>
+                            <span style="color: #3498db; font-weight: bold;">${stats.todayCreated}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span><strong>Tests modifiés aujourd'hui :</strong></span>
+                            <span style="color: #e67e22; font-weight: bold;">${stats.todayModified}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span><strong>Étapes sauvegardées :</strong></span>
+                            <span style="color: #9b59b6; font-weight: bold;">${stats.savedStepsCount}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="this.closest('.modal-overlay').remove()" 
+                            style="background: #e74c3c; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 1em;">
+                        Fermer
+                    </button>
+                </div>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            // Fermer en cliquant sur l'overlay
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    overlay.remove();
+                }
+            });
+        }
+        
+        function calculateTestStats() {
+            const allTests = testCases;
+            const today = new Date().toDateString();
+            
+            // Statistiques globales
+            const totalTests = allTests.length;
+            const successCount = allTests.filter(test => test.status === 'OK').length;
+            const errorCount = allTests.filter(test => test.status === 'KO').length;
+            const pendingCount = allTests.filter(test => test.status === 'En cours').length;
+            const successRate = totalTests > 0 ? Math.round((successCount / totalTests) * 100) : 0;
+            
+            // Tests créés/modifiés aujourd'hui
+            const todayCreated = allTests.filter(test => {
+                const testDate = new Date(test.timestamp).toDateString();
+                return testDate === today;
+            }).length;
+            
+            const todayModified = allTests.filter(test => {
+                if (!test.lastModified) return false;
+                const modifiedDate = new Date(test.lastModified).toDateString();
+                return modifiedDate === today;
+            }).length;
+            
+            // Statistiques par jeu de test
+            const testSuiteStats = testSuites.map(suite => {
+                const suiteTests = allTests.filter(test => test.testSuite === suite.name);
+                return {
+                    name: suite.name,
+                    total: suiteTests.length,
+                    success: suiteTests.filter(test => test.status === 'OK').length,
+                    error: suiteTests.filter(test => test.status === 'KO').length,
+                    pending: suiteTests.filter(test => test.status === 'En cours').length
+                };
+            });
+            
+            // Ajouter les tests sans jeu de test
+            const testsWithoutSuite = allTests.filter(test => !test.testSuite || test.testSuite === '');
+            if (testsWithoutSuite.length > 0) {
+                testSuiteStats.push({
+                    name: 'Sans jeu de test',
+                    total: testsWithoutSuite.length,
+                    success: testsWithoutSuite.filter(test => test.status === 'OK').length,
+                    error: testsWithoutSuite.filter(test => test.status === 'KO').length,
+                    pending: testsWithoutSuite.filter(test => test.status === 'En cours').length
+                });
+            }
+            
+            // Nombre d'étapes sauvegardées
+            const savedStepsCount = savedSteps.length;
+            
+            return {
+                totalTests,
+                successCount,
+                errorCount,
+                pendingCount,
+                successRate,
+                todayCreated,
+                todayModified,
+                testSuiteStats,
+                savedStepsCount
+            };
         }
 
         // Gestion des touches
