@@ -11,7 +11,7 @@
 2. **Configurer la source**
    - **Source** : `Deploy from a branch`
    - **Branch** : `main` (ou `gh-pages` si vous utilisez le workflow)
-   - **Folder** : `/ (root)`
+   - **Folder** : `/ (root)` - Le fichier `index.html` est à la racine
 
 3. **Sauvegarder**
    - Cliquer sur `Save`
@@ -35,8 +35,7 @@ Le projet inclut deux workflows automatiques :
 
 ```
 Test-Case-Tracker/
-├── src/
-│   └── index.html          # Page principale
+├── index.html             # Application principale
 ├── .github/
 │   └── workflows/         # Workflows GitHub Actions
 ├── docs/                  # Documentation

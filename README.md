@@ -44,7 +44,7 @@ Une application web moderne et intuitive pour gérer, organiser et suivre vos ca
 2. **Ouvrir l'application**
    
    **Option 1: Directement dans le navigateur (le plus simple)**
-   - Double-cliquer sur `src/index.html`
+   - Double-cliquer sur `index.html`
    - Ou faire clic-droit → "Ouvrir avec" → votre navigateur
    - ✅ **Aucune installation requise !**
    
@@ -52,10 +52,10 @@ Une application web moderne et intuitive pour gérer, organiser et suivre vos ca
    ```bash
    # Si vous avez Python installé :
    python -m http.server 8000
-   # Puis aller sur http://localhost:8000/src/
+   # Puis aller sur http://localhost:8000/
    
    # Ou avec Node.js :
-   npx serve src
+   npx serve .
    ```
    
    **Option 3: GitHub Pages (pour partage/publication)**
@@ -72,8 +72,7 @@ Une application web moderne et intuitive pour gérer, organiser et suivre vos ca
 
 ```
 Test-Case-Tracker/
-├── src/
-│   └── index.html          # Application principale
+├── index.html             # Application principale
 ├── docs/
 │   ├── SPECIFICATION.md    # Spécifications détaillées
 │   └── AGENTS.md          # Architecture et agents

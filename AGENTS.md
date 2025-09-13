@@ -9,8 +9,7 @@ Le **Test Case Tracker** est une application web monolithique développée en HT
 ### Structure du Projet
 ```
 Test-Case-Tracker/
-├── src/
-│   └── index.html          # Application principale (monolithe)
+├── index.html             # Application principale (monolithe)
 ├── docs/
 │   ├── SPECIFICATION.md    # Spécifications détaillées
 │   └── AGENTS.md          # Ce fichier
