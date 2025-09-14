@@ -297,7 +297,7 @@
             color: #666;
             margin-top: 5px;
             padding: 5px 8px;
-            background: #f8f9fa;
+            background: #e3f2fd;
             border-radius: 4px;
             border-left: 3px solid #3498db;
             cursor: pointer;
@@ -305,8 +305,33 @@
         }
 
         .inline-result:hover {
-            background: #e3f2fd;
+            background: #bbdefb;
             border-left-color: #1976d2;
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .continue-btn:hover {
+            background: linear-gradient(135deg, #229954, #27ae60);
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .continue-btn:active {
+            transform: scale(0.95);
         }
 
         .test-cases {
@@ -418,7 +443,7 @@
         .test-result {
             margin-top: 15px;
             padding: 12px;
-            background: #ecf0f1;
+            background: #e3f2fd;
             border-radius: 8px;
             font-style: italic;
             color: #34495e;
@@ -934,6 +959,55 @@
         let currentTestSuite = '';
         let filteredTestSuite = '';
 
+        // Formater une date en format français
+        function formatDate(dateString) {
+            try {
+                // Si c'est déjà au format français (ancien format), le retourner tel quel
+                if (dateString.includes('/') && dateString.includes(':')) {
+                    return dateString;
+                }
+                
+                // Sinon, essayer de parser comme ISO et convertir
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) {
+                    return dateString; // Retourner la chaîne originale si le parsing échoue
+                }
+                return date.toLocaleString('fr-FR');
+            } catch (e) {
+                return dateString; // Retourner la chaîne originale si le parsing échoue
+            }
+        }
+
+        // Nettoyer les jeux de test vides (sans cas de test associés)
+        function cleanupEmptyTestSuites() {
+            // Obtenir tous les jeux de test utilisés dans les cas de test
+            const usedTestSuites = new Set(testCases.map(tc => tc.testSuite).filter(suite => suite && suite.trim()));
+            
+            // Filtrer les jeux de test pour ne garder que ceux qui sont utilisés
+            const originalLength = testSuites.length;
+            testSuites = testSuites.filter(suite => usedTestSuites.has(suite.name));
+            
+            // Si des jeux ont été supprimés, mettre à jour les sélecteurs
+            if (testSuites.length !== originalLength) {
+                updateTestSuiteSelectors();
+                
+                // Si le jeu de test actuel a été supprimé, le réinitialiser
+                if (currentTestSuite && !usedTestSuites.has(currentTestSuite)) {
+                    currentTestSuite = '';
+                    document.getElementById('testSuiteSelect').value = '';
+                }
+                
+                // Si le jeu de test filtré a été supprimé, le réinitialiser
+                if (filteredTestSuite && !usedTestSuites.has(filteredTestSuite)) {
+                    filteredTestSuite = '';
+                    document.getElementById('headerTestSuiteSelect').value = '';
+                }
+                
+                // Sauvegarder les jeux de test mis à jour
+                saveData();
+            }
+        }
+
         // Charger les données sauvegardées
         function loadData() {
             const savedData = localStorage.getItem('testCaseData');
@@ -954,6 +1028,10 @@
             }
             
             updateTestSuiteSelectors();
+            
+            // Nettoyer les jeux de test vides au chargement
+            cleanupEmptyTestSuites();
+            
             updateDisplay();
         }
 
@@ -1024,8 +1102,42 @@
         }
 
         function getFilteredTestCases() {
-            if (!filteredTestSuite) return testCases;
-            return testCases.filter(tc => tc.testSuite === filteredTestSuite);
+            let cases = testCases;
+            
+            // Filtrer par jeu de test si nécessaire
+            if (filteredTestSuite) {
+                cases = testCases.filter(tc => tc.testSuite === filteredTestSuite);
+            }
+            
+            // Trier par date du plus vieux au plus récent
+            return cases.sort((a, b) => {
+                // Convertir les timestamps en dates pour le tri
+                let dateA, dateB;
+                
+                // Gérer les différents formats de date
+                if (a.timestamp.includes('/') && a.timestamp.includes(':')) {
+                    // Format français existant
+                    dateA = new Date(a.timestamp);
+                } else {
+                    // Format ISO
+                    dateA = new Date(a.timestamp);
+                }
+                
+                if (b.timestamp.includes('/') && b.timestamp.includes(':')) {
+                    // Format français existant
+                    dateB = new Date(b.timestamp);
+                } else {
+                    // Format ISO
+                    dateB = new Date(b.timestamp);
+                }
+                
+                // Si les dates ne sont pas valides, utiliser l'ID comme fallback
+                if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+                    return a.id - b.id; // Tri par ID si les dates sont invalides
+                }
+                
+                return dateA - dateB; // Plus vieux en premier
+            });
         }
 
         // Ajouter une étape
@@ -1119,7 +1231,7 @@
                 steps: [...currentSteps],
                 result: result,
                 status: status,
-                timestamp: new Date().toLocaleString('fr-FR'),
+                timestamp: new Date().toISOString(),
                 duration: duration,
                 testSuite: currentTestSuite
             };
@@ -1434,8 +1546,11 @@
                         ${testCase.result ? `<div class="test-result test-result-editable" onclick="editResult(${testCase.id})" title="Cliquer pour modifier le résultat"><strong>Résultat :</strong> ${testCase.result}</div>` : ''}
                         
                         <div class="timer">
-                            📅 ${testCase.timestamp} | ⏱️ ${testCase.duration}s
-                            <button style="float: right; background: none; border: none; color: #e74c3c; cursor: pointer;" onclick="deleteTestCase(${testCase.id})">🗑️</button>
+                            📅 ${formatDate(testCase.timestamp)} | ⏱️ ${testCase.duration}s
+                            <div style="float: right; display: flex; gap: 8px; align-items: center;">
+                                <button class="continue-btn" onclick="continueTestCase(${testCase.id})" title="Continuer ce test avec de nouvelles étapes">🔄 Continuer</button>
+                                <button style="background: none; border: none; color: #e74c3c; cursor: pointer;" onclick="deleteTestCase(${testCase.id})">🗑️</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1513,9 +1628,10 @@
                             </div>
                             <div class="inline-time">
                                 <span>${testCase.duration}s</span>
-                                <span style="font-size: 10px;">${testCase.timestamp.split(' ')[1]}</span>
+                                <span style="font-size: 10px;">${formatDate(testCase.timestamp).split(' ')[1]}</span>
                             </div>
                             <div class="inline-actions">
+                                <button class="continue-btn" onclick="continueTestCase(${testCase.id})" title="Continuer ce test">🔄</button>
                                 <button onclick="deleteTestCase(${testCase.id})" title="Supprimer">🗑️</button>
                             </div>
                         </div>
@@ -1591,9 +1707,52 @@
         function deleteTestCase(id) {
             if (confirm('Êtes-vous sûr de vouloir supprimer ce cas de test ?')) {
                 testCases = testCases.filter(tc => tc.id !== id);
+                
+                // Nettoyer les jeux de test vides après suppression
+                cleanupEmptyTestSuites();
+                
                 updateDisplay();
                 saveData();
             }
+        }
+
+        // Continuer un cas de test existant
+        function continueTestCase(id) {
+            const originalTestCase = testCases.find(tc => tc.id === id);
+            if (!originalTestCase) return;
+
+            // Charger les étapes du cas de test original
+            currentSteps = [...originalTestCase.steps];
+            
+            // Définir le jeu de test actuel
+            currentTestSuite = originalTestCase.testSuite;
+            document.getElementById('testSuiteSelect').value = currentTestSuite;
+            
+            // Créer un titre pour la suite
+            const originalTitle = originalTestCase.title || `Test Case #${originalTestCase.id}`;
+            const newTitle = `Suite de ${originalTitle}`;
+            document.getElementById('testTitleInput').value = newTitle;
+            
+            // Vider les autres champs
+            document.getElementById('resultInput').value = '';
+            document.getElementById('statusSelect').value = 'pending';
+            
+            // Redémarrer le timer
+            currentTestStartTime = new Date();
+            
+            // Mettre à jour l'affichage des étapes courantes
+            updateCurrentStepsDisplay();
+            
+            // Faire défiler vers la section de création
+            document.querySelector('.input-section').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+            
+            // Focus sur le champ d'ajout d'étape
+            setTimeout(() => {
+                document.getElementById('stepInput').focus();
+            }, 500);
         }
 
         // Afficher les options d'export
@@ -1701,7 +1860,12 @@
         // Export CSV
         function exportToCSV() {
             const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Résultat', 'Date', 'Durée (s)'];
-            const rows = testCases.map(tc => [
+            const sortedCases = testCases.sort((a, b) => {
+                const dateA = new Date(a.timestamp);
+                const dateB = new Date(b.timestamp);
+                return dateA - dateB; // Plus vieux en premier
+            });
+            const rows = sortedCases.map(tc => [
                 tc.id,
                 tc.title || `Test Case #${tc.id}`,
                 tc.testSuite || '',
@@ -1742,7 +1906,12 @@
 
             // Grouper par jeux de test
             const groupedCases = {};
-            testCases.forEach(testCase => {
+            const sortedCases = testCases.sort((a, b) => {
+                const dateA = new Date(a.timestamp);
+                const dateB = new Date(b.timestamp);
+                return dateA - dateB; // Plus vieux en premier
+            });
+            sortedCases.forEach(testCase => {
                 const suite = testCase.testSuite || 'Sans jeu';
                 if (!groupedCases[suite]) {
                     groupedCases[suite] = [];
@@ -1771,7 +1940,7 @@
                         md += `**Résultat :** ${testCase.result}\n\n`;
                     }
                     
-                    md += `**Détails :** ${testCase.timestamp} | Durée: ${testCase.duration}s\n\n`;
+                    md += `**Détails :** ${formatDate(testCase.timestamp)} | Durée: ${testCase.duration}s\n\n`;
                     md += `---\n\n`;
                 });
             });
@@ -1839,7 +2008,7 @@
                                 status: status || 'pending',
                                 steps: stepsStr.split(' ˃ ').filter(s => s.trim()),
                                 result: result || '',
-                                timestamp: timestamp || new Date().toLocaleString('fr-FR'),
+                                timestamp: timestamp || new Date().toISOString(),
                                 duration: parseInt(duration) || 0
                             };
                             
@@ -1858,6 +2027,9 @@
                     });
                     
                     if (importedCount > 0) {
+                        // Nettoyer les jeux de test vides après import
+                        cleanupEmptyTestSuites();
+                        
                         updateTestSuiteSelectors();
                         updateDisplay();
                         saveData();
@@ -1924,9 +2096,15 @@
             report += `❌ KO: ${stats.ko}\n`;
             report += `⏳ En cours: ${stats.pending}\n\n`;
 
-            testCases.forEach(testCase => {
+            const sortedCases = testCases.sort((a, b) => {
+                const dateA = new Date(a.timestamp);
+                const dateB = new Date(b.timestamp);
+                return dateA - dateB; // Plus vieux en premier
+            });
+            
+            sortedCases.forEach(testCase => {
                 report += `${testCase.title || `TEST CASE #${testCase.id}`} - ${testCase.status.toUpperCase()} - ${testCase.testSuite || 'Sans jeu'}\n`;
-                report += `Date: ${testCase.timestamp}\n`;
+                report += `Date: ${formatDate(testCase.timestamp)}\n`;
                 report += `Durée: ${testCase.duration}s\n`;
                 report += `Étapes:\n`;
                 testCase.steps.forEach((step, index) => {
@@ -1946,6 +2124,10 @@
             if (confirm('Êtes-vous sûr de vouloir effacer tous les cas de test ?')) {
                 testCases = [];
                 testCaseCounter = 1;
+                
+                // Nettoyer tous les jeux de test vides
+                cleanupEmptyTestSuites();
+                
                 updateDisplay();
                 saveData();
             }
