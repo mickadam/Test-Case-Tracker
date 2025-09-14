@@ -19,7 +19,6 @@
         }
 
         .container {
-            max-width: 1400px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
@@ -82,16 +81,19 @@
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 2fr;
+            grid-template-columns: 415px 1fr;
             gap: 30px;
             padding: 30px;
         }
 
         .input-section {
+            width: 415px;
             background: #f8f9fa;
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
         .input-section h2 {
@@ -338,7 +340,6 @@
             background: white;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            max-height: 70vh;
             overflow-y: auto;
         }
 
@@ -413,6 +414,11 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
+        .status-todo {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
         .status-ok {
             background: #d5f4e6;
             color: #27ae60;
@@ -482,6 +488,10 @@
             transform: translateX(5px);
         }
 
+        .inline-test.status-todo {
+            border-left-color: #6c757d;
+        }
+
         .inline-test.status-ok {
             border-left-color: #27ae60;
         }
@@ -536,20 +546,16 @@
             font-weight: bold;
             color: #2c3e50;
             margin-right: 15px;
-            min-width: 50px;
+            width: 200px;
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .inline-summary {
             flex: 1;
             color: #34495e;
-        }
-
-        .inline-time {
-            font-size: 11px;
-            color: #7f8c8d;
-            margin-left: 15px;
-            min-width: 80px;
-            text-align: right;
         }
 
         .inline-actions {
@@ -584,6 +590,11 @@
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
+            }
+            
+            .input-section {
+                width: 100%;
+                max-width: none;
             }
         }
 
@@ -887,9 +898,10 @@
                 <div class="input-group">
                     <label for="statusSelect">Statut :</label>
                     <select id="statusSelect">
+                        <option value="todo">📋 À faire</option>
+                        <option value="pending">⏳ En cours</option>
                         <option value="ok">✅ OK</option>
                         <option value="ko">❌ KO</option>
-                        <option value="pending">⏳ En cours</option>
                     </select>
                 </div>
 
@@ -1248,7 +1260,7 @@
             currentTestStartTime = null;
             document.getElementById('testTitleInput').value = '';
             document.getElementById('resultInput').value = '';
-            document.getElementById('statusSelect').value = 'ok';
+            document.getElementById('statusSelect').value = 'todo';
             updateCurrentStepsDisplay();
         }
 
@@ -1522,6 +1534,7 @@
             container.innerHTML = filteredCases.map(testCase => {
                 const statusClass = `status-${testCase.status}`;
                 const statusText = {
+                    'todo': '📋 À faire',
                     'ok': '✅ OK',
                     'ko': '❌ KO',
                     'pending': '⏳ En cours'
@@ -1546,10 +1559,14 @@
                         ${testCase.result ? `<div class="test-result test-result-editable" onclick="editResult(${testCase.id})" title="Cliquer pour modifier le résultat"><strong>Résultat :</strong> ${testCase.result}</div>` : ''}
                         
                         <div class="timer">
-                            📅 ${formatDate(testCase.timestamp)} | ⏱️ ${testCase.duration}s
-                            <div style="float: right; display: flex; gap: 8px; align-items: center;">
-                                <button class="continue-btn" onclick="continueTestCase(${testCase.id})" title="Continuer ce test avec de nouvelles étapes">🔄 Continuer</button>
-                                <button style="background: none; border: none; color: #e74c3c; cursor: pointer;" onclick="deleteTestCase(${testCase.id})">🗑️</button>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 12px; color: #7f8c8d;">
+                                    ${testCase.steps.length} étape${testCase.steps.length > 1 ? 's' : ''}
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button class="continue-btn" onclick="continueTestCase(${testCase.id})" title="Continuer ce test avec de nouvelles étapes">🔄 Continuer</button>
+                                    <button style="background: none; border: none; color: #e74c3c; cursor: pointer;" onclick="deleteTestCase(${testCase.id})">🗑️</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1582,6 +1599,7 @@
             Object.entries(groupedCases).forEach(([suiteName, cases]) => {
                 const stats = {
                     total: cases.length,
+                    todo: cases.filter(c => c.status === 'todo').length,
                     ok: cases.filter(c => c.status === 'ok').length,
                     ko: cases.filter(c => c.status === 'ko').length,
                     pending: cases.filter(c => c.status === 'pending').length
@@ -1592,7 +1610,7 @@
                         <div class="suite-header">
                             <span class="suite-name-editable" onclick="editTestSuiteName('${suiteName}')" style="font-size: 1.2em; font-weight: bold; cursor: pointer;" title="Cliquer pour modifier le nom du jeu de test">📦 ${suiteName}</span>
                             <span class="suite-stats">
-                                ${stats.total} tests | ✅ ${stats.ok} | ❌ ${stats.ko} | ⏳ ${stats.pending}
+                                ${stats.total} tests | 📋 ${stats.todo} | ✅ ${stats.ok} | ❌ ${stats.ko} | ⏳ ${stats.pending}
                             </span>
                         </div>
                         <div class="suite-content">
@@ -1600,6 +1618,7 @@
                 
                 cases.forEach(testCase => {
                     const statusIcon = {
+                        'todo': '📋',
                         'ok': '✅',
                         'ko': '❌',
                         'pending': '⏳'
@@ -1617,7 +1636,7 @@
                     html += `
                         <div class="inline-test status-${testCase.status} fade-in">
                             <span class="inline-status" onclick="toggleStatus(${testCase.id})" title="Cliquer pour changer le statut">${statusIcon}</span>
-                            <span class="inline-id inline-title-editable" onclick="editTestCaseTitle(${testCase.id})" title="Cliquer pour modifier le titre">${testCase.title || `#${testCase.id}`}</span>
+                            <span class="inline-id inline-title-editable" onclick="editTestCaseTitle(${testCase.id})" title="Cliquer pour modifier le titre - ${testCase.title || `Test Case #${testCase.id}`}">${testCase.title || `Test Case #${testCase.id}`}</span>
                             <div class="inline-summary">
                                 <div class="inline-steps-flow">
                                     ${stepsFlow}
@@ -1625,10 +1644,6 @@
                                 <div class="inline-result" onclick="editResult(${testCase.id})" title="Cliquer pour modifier">
                                     <strong>Résultat :</strong> ${resultSummary}
                                 </div>
-                            </div>
-                            <div class="inline-time">
-                                <span>${testCase.duration}s</span>
-                                <span style="font-size: 10px;">${formatDate(testCase.timestamp).split(' ')[1]}</span>
                             </div>
                             <div class="inline-actions">
                                 <button class="continue-btn" onclick="continueTestCase(${testCase.id})" title="Continuer ce test">🔄</button>
@@ -1692,8 +1707,8 @@
             const testCase = testCases.find(tc => tc.id === testId);
             if (!testCase) return;
             
-            // Cycle des statuts : ok -> ko -> pending -> ok
-            const statusCycle = ['ok', 'ko', 'pending'];
+            // Cycle des statuts : todo -> pending -> ok -> ko -> todo
+            const statusCycle = ['todo', 'pending', 'ok', 'ko'];
             const currentIndex = statusCycle.indexOf(testCase.status);
             const nextIndex = (currentIndex + 1) % statusCycle.length;
             
@@ -1859,7 +1874,7 @@
 
         // Export CSV
         function exportToCSV() {
-            const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Résultat', 'Date', 'Durée (s)'];
+            const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Résultat', 'Date'];
             const sortedCases = testCases.sort((a, b) => {
                 const dateA = new Date(a.timestamp);
                 const dateB = new Date(b.timestamp);
@@ -1872,8 +1887,7 @@
                 tc.status,
                 tc.steps.join(' ˃ '),
                 tc.result || '',
-                tc.timestamp,
-                tc.duration
+                tc.timestamp
             ]);
             
             const csvContent = [headers, ...rows]
@@ -1888,6 +1902,7 @@
         function exportToMarkdown() {
             const stats = {
                 total: testCases.length,
+                todo: testCases.filter(tc => tc.status === 'todo').length,
                 ok: testCases.filter(tc => tc.status === 'ok').length,
                 ko: testCases.filter(tc => tc.status === 'ko').length,
                 pending: testCases.filter(tc => tc.status === 'pending').length
@@ -1900,9 +1915,10 @@
             md += `| Métrique | Valeur |\n`;
             md += `|----------|--------|\n`;
             md += `| Total des tests | ${stats.total} |\n`;
+            md += `| 📋 À faire | ${stats.todo} |\n`;
+            md += `| ⏳ En cours | ${stats.pending} |\n`;
             md += `| ✅ Succès | ${stats.ok} |\n`;
-            md += `| ❌ Échecs | ${stats.ko} |\n`;
-            md += `| ⏳ En cours | ${stats.pending} |\n\n`;
+            md += `| ❌ Échecs | ${stats.ko} |\n\n`;
 
             // Grouper par jeux de test
             const groupedCases = {};
@@ -1924,6 +1940,7 @@
                 
                 cases.forEach(testCase => {
                     const statusIcon = {
+                        'todo': '📋',
                         'ok': '✅',
                         'ko': '❌',
                         'pending': '⏳'
@@ -1940,7 +1957,7 @@
                         md += `**Résultat :** ${testCase.result}\n\n`;
                     }
                     
-                    md += `**Détails :** ${formatDate(testCase.timestamp)} | Durée: ${testCase.duration}s\n\n`;
+                    md += `\n`;
                     md += `---\n\n`;
                 });
             });
@@ -2009,7 +2026,7 @@
                                 steps: stepsStr.split(' ˃ ').filter(s => s.trim()),
                                 result: result || '',
                                 timestamp: timestamp || new Date().toISOString(),
-                                duration: parseInt(duration) || 0
+                                duration: 0
                             };
                             
                             testCases.unshift(testCase);
@@ -2083,6 +2100,7 @@
         function generateReport() {
             const stats = {
                 total: testCases.length,
+                todo: testCases.filter(tc => tc.status === 'todo').length,
                 ok: testCases.filter(tc => tc.status === 'ok').length,
                 ko: testCases.filter(tc => tc.status === 'ko').length,
                 pending: testCases.filter(tc => tc.status === 'pending').length
@@ -2092,9 +2110,10 @@
             report += `${'='.repeat(50)}\n\n`;
             report += `STATISTIQUES:\n`;
             report += `Total des cas de test: ${stats.total}\n`;
+            report += `📋 À faire: ${stats.todo}\n`;
+            report += `⏳ En cours: ${stats.pending}\n`;
             report += `✅ OK: ${stats.ok}\n`;
-            report += `❌ KO: ${stats.ko}\n`;
-            report += `⏳ En cours: ${stats.pending}\n\n`;
+            report += `❌ KO: ${stats.ko}\n\n`;
 
             const sortedCases = testCases.sort((a, b) => {
                 const dateA = new Date(a.timestamp);
@@ -2104,8 +2123,6 @@
             
             sortedCases.forEach(testCase => {
                 report += `${testCase.title || `TEST CASE #${testCase.id}`} - ${testCase.status.toUpperCase()} - ${testCase.testSuite || 'Sans jeu'}\n`;
-                report += `Date: ${formatDate(testCase.timestamp)}\n`;
-                report += `Durée: ${testCase.duration}s\n`;
                 report += `Étapes:\n`;
                 testCase.steps.forEach((step, index) => {
                     report += `  ${index + 1}. ${step}\n`;
