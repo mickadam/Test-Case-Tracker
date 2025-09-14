@@ -32,11 +32,15 @@ Le projet inclut un workflow automatique :
 ```
 Test-Case-Tracker/
 ├── index.html             # Application principale
+├── docs/
+│   └── SPECIFICATION.md    # Spécifications détaillées
 ├── .github/
-│   └── workflows/         # Workflows GitHub Actions
-├── docs/                  # Documentation
-├── assets/                # Ressources statiques
-└── README.md              # Documentation utilisateur
+│   └── workflows/         # GitHub Actions pour déploiement
+│       └── pages.yml      # Workflow de déploiement GitHub Pages
+├── AGENTS.md              # Architecture et agents
+├── DEPLOYMENT.md          # Guide de déploiement GitHub Pages
+├── README.md              # Documentation utilisateur
+└── LICENSE                # Licence CC0-1.0
 ```
 
 ## Déploiement Manuel

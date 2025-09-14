@@ -11,15 +11,14 @@ Le **Test Case Tracker** est une application web monolithique développée en HT
 Test-Case-Tracker/
 ├── index.html             # Application principale (monolithe)
 ├── docs/
-│   ├── SPECIFICATION.md    # Spécifications détaillées
-│   └── AGENTS.md          # Ce fichier
-├── assets/                 # Ressources statiques (vides)
+│   └── SPECIFICATION.md    # Spécifications détaillées
 ├── .github/
 │   └── workflows/         # GitHub Actions pour déploiement
-├── 404.html               # Page d'erreur personnalisée
+│       └── pages.yml      # Workflow de déploiement GitHub Pages
+├── AGENTS.md              # Ce fichier - Architecture et agents
 ├── DEPLOYMENT.md          # Guide de déploiement GitHub Pages
 ├── README.md              # Documentation utilisateur
-└── LICENSE                # Licence du projet
+└── LICENSE                # Licence CC0-1.0
 ```
 
 ### Modèle d'Architecture

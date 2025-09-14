@@ -80,15 +80,14 @@ L'application est déployée sur GitHub Pages et accessible immédiatement sans 
 Test-Case-Tracker/
 ├── index.html             # Application principale
 ├── docs/
-│   ├── SPECIFICATION.md    # Spécifications détaillées
-│   └── AGENTS.md          # Architecture et agents
-├── assets/                 # Ressources statiques
+│   └── SPECIFICATION.md    # Spécifications détaillées
 ├── .github/
 │   └── workflows/         # GitHub Actions pour déploiement automatique
-├── 404.html               # Page d'erreur personnalisée
+│       └── pages.yml      # Workflow de déploiement GitHub Pages
+├── AGENTS.md              # Architecture et agents
 ├── DEPLOYMENT.md          # Guide de déploiement GitHub Pages
 ├── README.md              # Ce fichier
-└── LICENSE                # Licence MIT
+└── LICENSE                # Licence CC0-1.0
 ```
 
 ## 🎮 Utilisation
