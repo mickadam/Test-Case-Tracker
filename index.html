@@ -215,6 +215,100 @@
             transform: scale(1.1);
         }
 
+        .step-delete-btn {
+            background: rgba(231, 76, 60, 0.8);
+            padding: 5px 8px;
+            cursor: pointer;
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            font-size: 10px;
+        }
+
+        .step-delete-btn:hover {
+            background: rgba(231, 76, 60, 1);
+            transform: scale(1.1);
+        }
+
+        .suite-name-editable {
+            transition: all 0.3s ease;
+        }
+
+        .suite-name-editable:hover {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .suite-name-editing {
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 1.2em;
+            font-weight: bold;
+            min-width: 200px;
+        }
+
+        .test-title-editable, .inline-title-editable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-title-editable:hover, .inline-title-editable:hover {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .test-step-editable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-step-editable:hover {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .test-result-editable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-result-editable:hover {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .editing-input {
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: inherit;
+            font-weight: inherit;
+            min-width: 150px;
+        }
+
+        .inline-result {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+            padding: 5px 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .inline-result:hover {
+            background: #e3f2fd;
+            border-left-color: #1976d2;
+        }
+
         .test-cases {
             background: white;
             border-radius: 15px;
@@ -396,13 +490,21 @@
             font-size: 11px;
             margin: 2px;
             transition: all 0.3s ease;
-            cursor: default;
+            cursor: pointer;
         }
 
         .inline-step:hover {
             background: #3498db;
             color: white;
             transform: scale(1.05);
+        }
+
+        .step-chevron {
+            font-size: 1,6em;
+            font-weight: bold;
+            margin: 0 5px;
+            display: inline-block;
+            vertical-align: middle;
         }
 
         .inline-id {
@@ -740,17 +842,17 @@
                 </div>
 
                 <div class="input-group">
+                    <label for="testTitleInput">Titre du cas de test :</label>
+                    <input type="text" id="testTitleInput" placeholder="Ex: Test de connexion HTTP">
+                </div>
+
+                <div class="input-group">
                     <label for="stepInput">Étape du test :</label>
                     <input type="text" id="stepInput" placeholder="Ex: Ouverture de conf">
                     <button class="btn" onclick="addStep()">Ajouter Étape</button>
                 </div>
 
                 <div id="currentSteps" style="margin: 15px 0;"></div>
-
-                <div class="input-group">
-                    <label for="testTitleInput">Titre du cas de test :</label>
-                    <input type="text" id="testTitleInput" placeholder="Ex: Test de connexion HTTP">
-                </div>
 
                 <div class="input-group">
                     <label for="resultInput">Résultat observé :</label>
@@ -772,7 +874,7 @@
                 <div class="saved-steps">
                     <h3>Étapes sauvegardées :</h3>
                     <p style="font-size: 11px; color: #7f8c8d; margin-bottom: 10px;">
-                        Cliquez sur une étape pour la mettre dans le champ, ou sur <strong>+</strong> pour l'ajouter directement
+                        Cliquez sur une étape pour la mettre dans le champ, sur <strong>+</strong> pour l'ajouter directement, ou sur <strong>🗑️</strong> pour la supprimer
                     </p>
                     <div id="savedStepsTags"></div>
                 </div>
@@ -820,7 +922,7 @@
             </p>
         </div>
     </footer>
-    
+
     <script>
         let testCases = [];
         let savedSteps = new Set();
@@ -869,12 +971,18 @@
             
             if (mainSelector) {
                 mainSelector.innerHTML = '<option value="">Sélectionner un jeu de test...</option>' + 
-                    testSuites.map(suite => `<option value="${suite}" ${suite === currentTestSuite ? 'selected' : ''}>${suite}</option>`).join('');
+                    testSuites.map(suite => {
+                        const suiteName = typeof suite === 'string' ? suite : suite.name;
+                        return `<option value="${suiteName}" ${suiteName === currentTestSuite ? 'selected' : ''}>${suiteName}</option>`;
+                    }).join('');
             }
             
             if (headerSelector) {
                 headerSelector.innerHTML = '<option value="">Tous les jeux de test</option>' + 
-                    testSuites.map(suite => `<option value="${suite}" ${suite === filteredTestSuite ? 'selected' : ''}>${suite}</option>`).join('');
+                    testSuites.map(suite => {
+                        const suiteName = typeof suite === 'string' ? suite : suite.name;
+                        return `<option value="${suiteName}" ${suiteName === filteredTestSuite ? 'selected' : ''}>${suiteName}</option>`;
+                    }).join('');
             }
         }
 
@@ -887,12 +995,18 @@
                 return;
             }
             
-            if (testSuites.includes(suiteName)) {
+            // Vérifier si le jeu de test existe déjà (compatible avec les deux formats)
+            const exists = testSuites.some(suite => {
+                const name = typeof suite === 'string' ? suite : suite.name;
+                return name === suiteName;
+            });
+            
+            if (exists) {
                 alert('Ce jeu de test existe déjà !');
                 return;
             }
             
-            testSuites.push(suiteName);
+            testSuites.push({ name: suiteName });
             currentTestSuite = suiteName;
             input.value = '';
             
@@ -958,6 +1072,7 @@
                 `<span class="step-tag">
                     <span class="step-text" onclick="reuseStep('${step.replace(/'/g, "\\'")}')" title="Cliquer pour remplir la zone de texte">${step}</span>
                     <span class="step-add-btn" onclick="addStepDirectly('${step.replace(/'/g, "\\'")}')" title="Ajouter directement cette étape">➕</span>
+                    <span class="step-delete-btn" onclick="deleteSavedStep('${step.replace(/'/g, "\\'")}')" title="Supprimer cette étape">🗑️</span>
                 </span>`
             ).join('');
         }
@@ -1025,6 +1140,235 @@
             updateCurrentStepsDisplay();
         }
 
+        function deleteSavedStep(step) {
+            if (confirm(`Êtes-vous sûr de vouloir supprimer l'étape "${step}" ?`)) {
+                savedSteps.delete(step);
+                updateSavedStepsDisplay();
+                saveData();
+            }
+        }
+
+        function renameTestSuite() {
+            const currentSuite = document.getElementById('headerTestSuiteSelect').value;
+            if (!currentSuite) {
+                alert('Veuillez d\'abord sélectionner un jeu de test à renommer.');
+                return;
+            }
+
+            const newName = prompt(`Renommer le jeu de test "${currentSuite}" :`, currentSuite);
+            if (newName && newName.trim() && newName !== currentSuite) {
+                // Vérifier que le nouveau nom n'existe pas déjà
+                const exists = testSuites.some(suite => {
+                    const name = typeof suite === 'string' ? suite : suite.name;
+                    return name === newName.trim();
+                });
+                
+                if (exists) {
+                    alert('Un jeu de test avec ce nom existe déjà.');
+                    return;
+                }
+
+                // Mettre à jour le jeu de test
+                const suite = testSuites.find(s => {
+                    const name = typeof s === 'string' ? s : s.name;
+                    return name === currentSuite;
+                });
+                
+                if (suite) {
+                    if (typeof suite === 'string') {
+                        // Convertir en objet si c'est encore une string
+                        const index = testSuites.indexOf(suite);
+                        testSuites[index] = { name: newName.trim() };
+                    } else {
+                        suite.name = newName.trim();
+                    }
+                }
+
+                // Mettre à jour tous les cas de test qui utilisent ce jeu
+                testCases.forEach(testCase => {
+                    if (testCase.testSuite === currentSuite) {
+                        testCase.testSuite = newName.trim();
+                    }
+                });
+
+                updateTestSuiteSelectors();
+                updateDisplay();
+                saveData();
+            }
+        }
+
+
+
+        function editStep(testId, stepIndex) {
+            const testCase = testCases.find(tc => tc.id === testId);
+            if (!testCase || !testCase.steps[stepIndex]) return;
+
+            const element = event.target;
+            const currentStep = testCase.steps[stepIndex];
+            
+            // Créer un input temporaire
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentStep;
+            input.className = 'editing-input';
+            input.style.width = Math.max(200, currentStep.length * 8) + 'px';
+            
+            // Remplacer temporairement l'élément
+            element.parentNode.replaceChild(input, element);
+            input.focus();
+            input.select();
+            
+            function saveStep() {
+                const newStep = input.value.trim();
+                if (newStep && newStep !== currentStep) {
+                    testCase.steps[stepIndex] = newStep;
+                    testCase.lastModified = new Date().toISOString();
+                    updateDisplay();
+                    saveData();
+                } else {
+                    updateDisplay();
+                }
+            }
+            
+            function cancelEdit() {
+                updateDisplay();
+            }
+            
+            input.addEventListener('blur', saveStep);
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveStep();
+                } else if (e.key === 'Escape') {
+                    cancelEdit();
+                }
+            });
+        }
+
+        function editTestCaseTitle(testId) {
+            const testCase = testCases.find(tc => tc.id === testId);
+            if (!testCase) return;
+
+            const element = event.target;
+            const currentTitle = testCase.title || `Test Case #${testId}`;
+            
+            // Créer un input temporaire
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentTitle;
+            input.className = 'editing-input';
+            input.style.width = Math.max(200, currentTitle.length * 8) + 'px';
+            
+            // Remplacer temporairement l'élément
+            element.parentNode.replaceChild(input, element);
+            input.focus();
+            input.select();
+            
+            function saveTitle() {
+                const newTitle = input.value.trim();
+                if (newTitle && newTitle !== currentTitle) {
+                    testCase.title = newTitle;
+                    testCase.lastModified = new Date().toISOString();
+                    updateDisplay();
+                    saveData();
+                } else {
+                    updateDisplay();
+                }
+            }
+            
+            function cancelEdit() {
+                updateDisplay();
+            }
+            
+            input.addEventListener('blur', saveTitle);
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveTitle();
+                } else if (e.key === 'Escape') {
+                    cancelEdit();
+                }
+            });
+        }
+
+        function editTestSuiteName(suiteName) {
+            if (suiteName === 'Sans jeu') {
+                alert('Impossible de renommer "Sans jeu".');
+                return;
+            }
+
+            const element = event.target;
+            const currentName = suiteName;
+            
+            // Créer un input temporaire
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentName;
+            input.className = 'suite-name-editing';
+            input.style.width = Math.max(200, currentName.length * 12) + 'px';
+            
+            // Remplacer temporairement l'élément
+            element.parentNode.replaceChild(input, element);
+            input.focus();
+            input.select();
+            
+            function saveSuiteName() {
+                const newName = input.value.trim();
+                if (newName && newName !== currentName) {
+                    // Vérifier que le nouveau nom n'existe pas déjà
+                    const exists = testSuites.some(suite => {
+                        const name = typeof suite === 'string' ? suite : suite.name;
+                        return name === newName;
+                    });
+                    
+                    if (exists) {
+                        alert('Un jeu de test avec ce nom existe déjà.');
+                        updateDisplay();
+                        return;
+                    }
+
+                    // Mettre à jour le jeu de test
+                    const suite = testSuites.find(s => {
+                        const name = typeof s === 'string' ? s : s.name;
+                        return name === currentName;
+                    });
+                    if (suite) {
+                        if (typeof suite === 'string') {
+                            // Convertir en objet si c'est encore une string
+                            const index = testSuites.indexOf(suite);
+                            testSuites[index] = { name: newName };
+                        } else {
+                            suite.name = newName;
+                        }
+                    }
+
+                    // Mettre à jour tous les cas de test qui utilisent ce jeu
+                    testCases.forEach(testCase => {
+                        if (testCase.testSuite === currentName) {
+                            testCase.testSuite = newName;
+                        }
+                    });
+
+                    updateTestSuiteSelectors();
+                    updateDisplay();
+                    saveData();
+                } else {
+                    updateDisplay();
+                }
+            }
+            
+            function cancelEdit() {
+                updateDisplay();
+            }
+            
+            input.addEventListener('blur', saveSuiteName);
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveSuiteName();
+                } else if (e.key === 'Escape') {
+                    cancelEdit();
+                }
+            });
+        }
+
         // Changer de vue
         function switchView(viewType) {
             currentView = viewType;
@@ -1074,17 +1418,20 @@
                 return `
                     <div class="test-case fade-in">
                         <div class="test-case-header">
-                            <div class="test-case-id">${testCase.title || `Test Case #${testCase.id}`} - ${testCase.testSuite || 'Sans jeu'}</div>
+                            <div class="test-case-id">
+                                <span class="test-title-editable" onclick="editTestCaseTitle(${testCase.id})" title="Cliquer pour modifier le titre">${testCase.title || `Test Case #${testCase.id}`}</span>
+                                <span style="color: #7f8c8d; font-size: 0.9em;"> - ${testCase.testSuite || 'Sans jeu'}</span>
+                            </div>
                             <div class="status ${statusClass}" onclick="toggleStatus(${testCase.id})" title="Cliquer pour changer le statut">${statusText}</div>
                         </div>
                         
                         <div class="test-steps">
                             ${testCase.steps.map((step, index) => 
-                                `<div class="test-step">${index + 1}. ${step}</div>`
+                                `<div class="test-step test-step-editable" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">${index + 1}. ${step}</div>`
                             ).join('')}
                         </div>
                         
-                        ${testCase.result ? `<div class="test-result"><strong>Résultat :</strong> ${testCase.result}</div>` : ''}
+                        ${testCase.result ? `<div class="test-result test-result-editable" onclick="editResult(${testCase.id})" title="Cliquer pour modifier le résultat"><strong>Résultat :</strong> ${testCase.result}</div>` : ''}
                         
                         <div class="timer">
                             📅 ${testCase.timestamp} | ⏱️ ${testCase.duration}s
@@ -1128,7 +1475,7 @@
                 html += `
                     <div class="test-suite-group">
                         <div class="suite-header">
-                            <span>📦 ${suiteName}</span>
+                            <span class="suite-name-editable" onclick="editTestSuiteName('${suiteName}')" style="font-size: 1.2em; font-weight: bold; cursor: pointer;" title="Cliquer pour modifier le nom du jeu de test">📦 ${suiteName}</span>
                             <span class="suite-stats">
                                 ${stats.total} tests | ✅ ${stats.ok} | ❌ ${stats.ko} | ⏳ ${stats.pending}
                             </span>
@@ -1144,9 +1491,9 @@
                     }[testCase.status];
 
                     // Créer le flux d'étapes avec chevrons (icône)
-                    const stepsFlow = testCase.steps.map(step => 
-                        `<span class="inline-step">${step}</span>`
-                    ).join('<span class="step-chevron">→</span>');
+                    const stepsFlow = testCase.steps.map((step, index) => 
+                        `<span class="inline-step" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">${step}</span>`
+                    ).join('<span class="step-chevron">˃</span>');
 
                     const resultSummary = testCase.result ? 
                         (testCase.result.length > 80 ? testCase.result.substring(0, 77) + '...' : testCase.result) :
@@ -1155,13 +1502,13 @@
                     html += `
                         <div class="inline-test status-${testCase.status} fade-in">
                             <span class="inline-status" onclick="toggleStatus(${testCase.id})" title="Cliquer pour changer le statut">${statusIcon}</span>
-                            <span class="inline-id">${testCase.title || `#${testCase.id}`}</span>
+                            <span class="inline-id inline-title-editable" onclick="editTestCaseTitle(${testCase.id})" title="Cliquer pour modifier le titre">${testCase.title || `#${testCase.id}`}</span>
                             <div class="inline-summary">
                                 <div class="inline-steps-flow">
                                     ${stepsFlow}
                                 </div>
                                 <div class="inline-result" onclick="editResult(${testCase.id})" title="Cliquer pour modifier">
-                                    📝 ${resultSummary}
+                                    <strong>Résultat :</strong> ${resultSummary}
                                 </div>
                             </div>
                             <div class="inline-time">
@@ -1359,7 +1706,7 @@
                 tc.title || `Test Case #${tc.id}`,
                 tc.testSuite || '',
                 tc.status,
-                tc.steps.join(' → '),
+                tc.steps.join(' ˃ '),
                 tc.result || '',
                 tc.timestamp,
                 tc.duration
@@ -1490,7 +1837,7 @@
                                 title: title || `Test Case #${testCaseCounter - 1}`,
                                 testSuite: testSuite || null,
                                 status: status || 'pending',
-                                steps: stepsStr.split(' → ').filter(s => s.trim()),
+                                steps: stepsStr.split(' ˃ ').filter(s => s.trim()),
                                 result: result || '',
                                 timestamp: timestamp || new Date().toLocaleString('fr-FR'),
                                 duration: parseInt(duration) || 0
