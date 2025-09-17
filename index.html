@@ -231,6 +231,37 @@
             transform: scale(1.1);
         }
 
+
+        /* Styles pour l'édition des étapes courantes */
+        .current-step-editable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .current-step-editable:hover {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .current-step-edit-btn {
+            background: rgba(52, 152, 219, 0.2);
+            border: none;
+            color: #2980b9;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            margin-left: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .current-step-edit-btn:hover {
+            background: rgba(52, 152, 219, 0.3);
+            transform: scale(1.1);
+        }
+
         .suite-name-editable {
             transition: all 0.3s ease;
         }
@@ -288,10 +319,12 @@
             background: white;
             border: 2px solid #3498db;
             border-radius: 4px;
-            padding: 2px 6px;
+            padding: 8px;
             font-size: inherit;
             font-weight: inherit;
             min-width: 150px;
+            font-family: inherit;
+            line-height: 1.4;
         }
 
         .inline-result {
@@ -304,6 +337,8 @@
             border-left: 3px solid #3498db;
             cursor: pointer;
             transition: all 0.3s ease;
+            white-space: pre-line;
+            word-wrap: break-word;
         }
 
         .inline-result:hover {
@@ -453,6 +488,8 @@
             border-radius: 8px;
             font-style: italic;
             color: #34495e;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         .timer {
@@ -1025,7 +1062,6 @@
             const savedData = localStorage.getItem('testCaseData');
             const savedStepsData = localStorage.getItem('savedStepsData');
             const savedSuitesData = localStorage.getItem('testSuitesData');
-            
             if (savedData) {
                 testCases = JSON.parse(savedData);
                 testCaseCounter = testCases.length > 0 ? Math.max(...testCases.map(tc => tc.id)) + 1 : 1;
@@ -1177,7 +1213,8 @@
             const container = document.getElementById('currentSteps');
             container.innerHTML = currentSteps.map((step, index) => 
                 `<div class="test-step">
-                    ${index + 1}. ${step}
+                    <span class="current-step-editable" onclick="editCurrentStep(${index})" title="Cliquer pour modifier cette étape">${index + 1}. ${step}</span>
+                    <button class="current-step-edit-btn" onclick="editCurrentStep(${index})" title="Modifier cette étape">✏️</button>
                     <button style="float: right; background: none; border: none; color: #e74c3c; cursor: pointer;" onclick="removeCurrentStep(${index})">✕</button>
                 </div>`
             ).join('');
@@ -1187,6 +1224,60 @@
         function removeCurrentStep(index) {
             currentSteps.splice(index, 1);
             updateCurrentStepsDisplay();
+        }
+
+
+
+        // Éditer une étape courante
+        function editCurrentStep(index) {
+            const currentStep = currentSteps[index];
+            if (!currentStep) return;
+
+            const element = event.target;
+            const stepContainer = element.closest('.test-step');
+            
+            // Créer un textarea temporaire
+            const textarea = document.createElement('textarea');
+            textarea.value = currentStep;
+            textarea.className = 'editing-input';
+            textarea.style.width = Math.max(200, currentStep.length * 8) + 'px';
+            textarea.style.minHeight = '60px';
+            textarea.style.resize = 'vertical';
+            textarea.style.fontFamily = 'inherit';
+            textarea.style.fontSize = 'inherit';
+            
+            // Remplacer temporairement l'élément
+            const editableSpan = stepContainer.querySelector('.current-step-editable');
+            editableSpan.parentNode.replaceChild(textarea, editableSpan);
+            textarea.focus();
+            textarea.select();
+            
+            function saveStep() {
+                const newStep = textarea.value.trim();
+                if (newStep && newStep !== currentStep) {
+                    currentSteps[index] = newStep;
+                    // Mettre à jour aussi dans les étapes sauvegardées
+                    savedSteps.delete(currentStep);
+                    savedSteps.add(newStep);
+                    updateSavedStepsDisplay();
+                    saveData();
+                }
+                updateCurrentStepsDisplay();
+            }
+            
+            function cancelEdit() {
+                updateCurrentStepsDisplay();
+            }
+            
+            textarea.addEventListener('blur', saveStep);
+            textarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    saveStep();
+                } else if (e.key === 'Escape') {
+                    cancelEdit();
+                }
+            });
         }
 
         // Afficher les étapes sauvegardées
@@ -1330,20 +1421,23 @@
             const element = event.target;
             const currentStep = testCase.steps[stepIndex];
             
-            // Créer un input temporaire
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentStep;
-            input.className = 'editing-input';
-            input.style.width = Math.max(200, currentStep.length * 8) + 'px';
+            // Créer un textarea temporaire
+            const textarea = document.createElement('textarea');
+            textarea.value = currentStep;
+            textarea.className = 'editing-input';
+            textarea.style.width = Math.max(200, currentStep.length * 8) + 'px';
+            textarea.style.minHeight = '60px';
+            textarea.style.resize = 'vertical';
+            textarea.style.fontFamily = 'inherit';
+            textarea.style.fontSize = 'inherit';
             
             // Remplacer temporairement l'élément
-            element.parentNode.replaceChild(input, element);
-            input.focus();
-            input.select();
+            element.parentNode.replaceChild(textarea, element);
+            textarea.focus();
+            textarea.select();
             
             function saveStep() {
-                const newStep = input.value.trim();
+                const newStep = textarea.value.trim();
                 if (newStep && newStep !== currentStep) {
                     testCase.steps[stepIndex] = newStep;
                     testCase.lastModified = new Date().toISOString();
@@ -1358,9 +1452,10 @@
                 updateDisplay();
             }
             
-            input.addEventListener('blur', saveStep);
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
+            textarea.addEventListener('blur', saveStep);
+            textarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
                     saveStep();
                 } else if (e.key === 'Escape') {
                     cancelEdit();
@@ -1552,7 +1647,9 @@
                         
                         <div class="test-steps">
                             ${testCase.steps.map((step, index) => 
-                                `<div class="test-step test-step-editable" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">${index + 1}. ${step}</div>`
+                                `<div class="test-step test-step-editable" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">
+                                    ${index + 1}. ${step}
+                                </div>`
                             ).join('')}
                         </div>
                         
@@ -1626,7 +1723,9 @@
 
                     // Créer le flux d'étapes avec chevrons (icône)
                     const stepsFlow = testCase.steps.map((step, index) => 
-                        `<span class="inline-step" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">${step}</span>`
+                        `<span class="inline-step" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">
+                            ${step}
+                        </span>`
                     ).join('<span class="step-chevron">˃</span>');
 
                     const resultSummary = testCase.result ? 
@@ -1642,7 +1741,7 @@
                                     ${stepsFlow}
                                 </div>
                                 <div class="inline-result" onclick="editResult(${testCase.id})" title="Cliquer pour modifier">
-                                    <strong>Résultat :</strong> ${resultSummary}
+                                    <strong>Résultat:</strong> ${resultSummary}
                                 </div>
                             </div>
                             <div class="inline-actions">
@@ -1668,20 +1767,24 @@
             const resultElement = event.target;
             const currentResult = testCase.result || '';
             
-            // Créer un input temporaire
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentResult;
-            input.className = 'inline-result editing';
-            input.style.width = Math.max(200, currentResult.length * 8) + 'px';
+            // Créer un textarea temporaire pour permettre l'édition multi-ligne
+            const textarea = document.createElement('textarea');
+            textarea.value = currentResult;
+            textarea.className = 'editing-input';
+            textarea.style.width = Math.max(300, currentResult.length * 8) + 'px';
+            textarea.style.minHeight = '80px';
+            textarea.style.resize = 'vertical';
+            textarea.style.fontFamily = 'inherit';
+            textarea.style.fontSize = 'inherit';
+            textarea.style.lineHeight = '1.4';
             
             // Remplacer temporairement l'élément
-            resultElement.parentNode.replaceChild(input, resultElement);
-            input.focus();
-            input.select();
+            resultElement.parentNode.replaceChild(textarea, resultElement);
+            textarea.focus();
+            textarea.select();
             
             function saveResult() {
-                const newResult = input.value.trim();
+                const newResult = textarea.value.trim();
                 testCase.result = newResult;
                 testCase.lastModified = new Date().toISOString(); // Ajouter timestamp de modification
                 saveData();
@@ -1692,9 +1795,10 @@
                 updateDisplay();
             }
             
-            input.addEventListener('blur', saveResult);
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
+            textarea.addEventListener('blur', saveResult);
+            textarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
                     saveResult();
                 } else if (e.key === 'Escape') {
                     cancelEdit();
@@ -2340,6 +2444,7 @@
                     }
                 });
             }
+            
             
             // Initialisation
             loadData();
