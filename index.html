@@ -339,6 +339,8 @@
             transition: all 0.3s ease;
             white-space: pre-line;
             word-wrap: break-word;
+            max-width: 100%;
+            overflow-wrap: break-word;
         }
 
         .inline-result:hover {
@@ -1728,9 +1730,7 @@
                         </span>`
                     ).join('<span class="step-chevron">˃</span>');
 
-                    const resultSummary = testCase.result ? 
-                        (testCase.result.length > 80 ? testCase.result.substring(0, 77) + '...' : testCase.result) :
-                        'Pas de résultat spécifié';
+                    const resultSummary = testCase.result || 'Pas de résultat spécifié';
 
                     html += `
                         <div class="inline-test status-${testCase.status} fade-in">
