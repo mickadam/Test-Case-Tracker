@@ -511,7 +511,7 @@
 
         .inline-test {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             padding: 12px 15px;
             margin: 5px 0;
             border-radius: 8px;
@@ -548,6 +548,8 @@
             margin-right: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: 2px;
+            flex-shrink: 0;
         }
 
         .inline-status:hover {
@@ -587,9 +589,10 @@
             margin-right: 15px;
             width: 200px;
             display: inline-block;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            white-space: pre-line;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            vertical-align: top;
         }
 
         .inline-summary {
