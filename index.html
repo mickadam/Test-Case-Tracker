@@ -1066,7 +1066,7 @@
                 
                 <div class="controls">
                     <button class="btn btn-export" onclick="showExportOptions()">📄 Exporter les Résultats</button>
-                    <button class="btn btn-import" onclick="showImportOptions()">📥 Importer CSV</button>
+                    <button class="btn btn-import" onclick="importFromJSON()">📥 Importer JSON</button>
                     <button class="btn btn-danger" onclick="clearAllTests()">🗑️ Effacer Tout</button>
                 </div>
             </div>
@@ -2222,11 +2222,11 @@
                 </h2>
                 
                 <div class="export-options">
-                    <div class="export-option" onclick="exportToCSV()">
-                        <span style="font-size: 24px;">📊</span>
+                    <div class="export-option" onclick="exportToJSON()">
+                        <span style="font-size: 24px;">📄</span>
                         <div>
-                            <strong>Export CSV</strong>
-                            <div style="font-size: 12px; color: #7f8c8d;">Format tableur pour analyse et réimport</div>
+                            <strong>Export JSON</strong>
+                            <div style="font-size: 12px; color: #7f8c8d;">Export complet pour sauvegarde et réimport</div>
                         </div>
                     </div>
                     
@@ -2262,48 +2262,6 @@
         }
 
         // Afficher les options d'import
-        function showImportOptions() {
-            // Fermer tout modal existant
-            closeModal();
-            
-            const overlay = document.createElement('div');
-            overlay.className = 'modal-overlay';
-            overlay.onclick = closeModal;
-            overlay.style.cssText = 'position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.7) !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 !important; padding: 0 !important;';
-            
-            const modal = document.createElement('div');
-            modal.className = 'import-modal';
-            modal.style.cssText = 'background: white !important; border-radius: 15px !important; padding: 30px !important; max-width: 500px !important; width: 90% !important; max-height: 80vh !important; overflow-y: auto !important; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important; position: relative !important; z-index: 10000 !important; margin: 0 !important;';
-            
-            modal.innerHTML = `
-                <h2 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">
-                    📥 Options d'Import
-                    <button onclick="closeModal()" style="float: right; background: none; border: none; font-size: 20px; cursor: pointer;">✕</button>
-                </h2>
-                
-                <div class="import-instructions">
-                    <strong>💡 Instructions :</strong><br>
-                    • Seuls les fichiers CSV exportés depuis cet outil sont supportés<br>
-                    • L'import ajoutera les tests à ceux existants<br>
-                    • Les IDs seront automatiquement recalculés<br>
-                    • Support des anciens formats (7 colonnes) et nouveaux formats (8 colonnes)
-                </div>
-                
-                <div class="import-options">
-                    <div class="import-option" onclick="document.getElementById('csvFileInput').click()">
-                        <span style="font-size: 24px;">📊</span>
-                        <div>
-                            <strong>Importer CSV</strong>
-                            <div style="font-size: 12px; color: #7f8c8d;">Charger des cas de test depuis un fichier CSV</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Ajouter d'abord l'overlay, puis le modal
-            document.body.appendChild(overlay);
-            overlay.appendChild(modal);
-        }
 
         function closeModal() {
             document.querySelector('.modal-overlay')?.remove();
@@ -2312,38 +2270,146 @@
         }
 
         // Export CSV
-        function exportToCSV() {
-            const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Images', 'Résultat', 'Date'];
+        function exportToJSON() {
             const filteredCases = getFilteredTestCases();
-            const rows = filteredCases.map(tc => {
-                // Compter les images pour chaque étape
-                const stepImagesList = tc.steps.map((step, index) => {
-                    const stepKey = `${tc.id}-${index}`;
-                    return stepImages[stepKey] ? 'OUI' : 'NON';
-                });
-                
-                return [
-                    tc.id,
-                    tc.title || `Test Case #${tc.id}`,
-                    tc.testSuite || '',
-                    tc.status,
-                    tc.steps.join(' ˃ '),
-                    stepImagesList.join(' | '),
-                    tc.result || '',
-                    tc.timestamp
-                ];
-            });
             
-            const csvContent = [headers, ...rows]
-                .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-                .join('\n');
+            // Créer l'objet de données complet
+            const exportData = {
+                metadata: {
+                    exportDate: new Date().toISOString(),
+                    testSuite: filteredTestSuite || 'all',
+                    totalTestCases: filteredCases.length,
+                    totalImages: Object.keys(stepImages).length,
+                    version: '1.0'
+                },
+                testCases: filteredCases,
+                testSuites: testSuites,
+                savedSteps: [...savedSteps],
+                stepImages: stepImages,
+                lastUsedTestSuite: lastUsedTestSuite
+            };
             
+            const jsonContent = JSON.stringify(exportData, null, 2);
             const filename = filteredTestSuite ? 
-                `test-cases-${filteredTestSuite}-${new Date().toISOString().split('T')[0]}.csv` :
-                `test-cases-all-${new Date().toISOString().split('T')[0]}.csv`;
+                `test-cases-${filteredTestSuite}-${new Date().toISOString().split('T')[0]}.json` :
+                `test-cases-all-${new Date().toISOString().split('T')[0]}.json`;
             
-            downloadFile(csvContent, 'text/csv;charset=utf-8', filename);
+            downloadFile(jsonContent, 'application/json;charset=utf-8', filename);
             closeModal();
+        }
+
+        // Import JSON
+        function importFromJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const importData = JSON.parse(e.target.result);
+                            
+                            // Vérifier la structure du fichier
+                            if (!importData.testCases || !Array.isArray(importData.testCases)) {
+                                alert('Format de fichier invalide. Le fichier doit contenir des cas de test.');
+                                return;
+                            }
+                            
+                            // Demander confirmation avant import
+                            const confirmMessage = `Êtes-vous sûr de vouloir importer ${importData.testCases.length} cas de test ?\n\n` +
+                                `Les données seront ajoutées aux existantes (pas de remplacement).`;
+                            
+                            if (confirm(confirmMessage)) {
+                                let importedTestCases = 0;
+                                let importedTestSuites = 0;
+                                let importedSteps = 0;
+                                let importedImages = 0;
+                                
+                                // Créer une map pour suivre les correspondances d'IDs
+                                const idMapping = new Map();
+                                
+                                // Importer les cas de test (éviter les doublons par titre + jeu de test)
+                                const existingTestCases = new Set(testCases.map(tc => 
+                                    `${tc.title || ''}-${tc.testSuite || ''}-${tc.timestamp || ''}`
+                                ));
+                                
+                                const newTestCases = (importData.testCases || []).filter(tc => {
+                                    const key = `${tc.title || ''}-${tc.testSuite || ''}-${tc.timestamp || ''}`;
+                                    return !existingTestCases.has(key);
+                                });
+                                
+                                // Ajuster les IDs pour éviter les conflits et créer le mapping
+                                const maxExistingId = testCases.length > 0 ? Math.max(...testCases.map(tc => tc.id)) : 0;
+                                newTestCases.forEach((tc, index) => {
+                                    const oldId = tc.id;
+                                    const newId = maxExistingId + index + 1;
+                                    tc.id = newId;
+                                    idMapping.set(oldId, newId);
+                                });
+                                
+                                testCases.push(...newTestCases);
+                                importedTestCases = newTestCases.length;
+                                
+                                // Importer les jeux de test (éviter les doublons)
+                                const existingSuites = new Set(testSuites.map(suite => 
+                                    typeof suite === 'string' ? suite : suite.name
+                                ));
+                                const newTestSuites = (importData.testSuites || []).filter(suite => {
+                                    const suiteName = typeof suite === 'string' ? suite : suite.name;
+                                    return !existingSuites.has(suiteName);
+                                });
+                                
+                                testSuites.push(...newTestSuites);
+                                importedTestSuites = newTestSuites.length;
+                                
+                                // Importer les étapes sauvegardées (éviter les doublons)
+                                const newSteps = (importData.savedSteps || []).filter(step => !savedSteps.has(step));
+                                newSteps.forEach(step => savedSteps.add(step));
+                                importedSteps = newSteps.length;
+                                
+                                // Importer les images avec le mapping d'IDs
+                                Object.keys(importData.stepImages || {}).forEach(key => {
+                                    const [oldId, stepIndex] = key.split('-');
+                                    const newId = idMapping.get(parseInt(oldId));
+                                    
+                                    if (newId) {
+                                        const newKey = `${newId}-${stepIndex}`;
+                                        stepImages[newKey] = importData.stepImages[key];
+                                        importedImages++;
+                                    }
+                                });
+                                
+                                // Mettre à jour le compteur
+                                testCaseCounter = testCases.length > 0 ? Math.max(...testCases.map(tc => tc.id)) + 1 : 1;
+                                
+                                // Sauvegarder et mettre à jour l'affichage
+                                saveData();
+                                updateTestSuiteSelectors();
+                                updateDisplay();
+                                
+                                // Message de confirmation détaillé
+                                let message = `Import réussi !\n\n`;
+                                if (importedTestCases > 0) message += `• ${importedTestCases} nouveaux cas de test\n`;
+                                if (importedTestSuites > 0) message += `• ${importedTestSuites} nouveaux jeux de test\n`;
+                                if (importedSteps > 0) message += `• ${importedSteps} nouvelles étapes sauvegardées\n`;
+                                if (importedImages > 0) message += `• ${importedImages} nouvelles images\n`;
+                                
+                                if (importedTestCases === 0 && importedTestSuites === 0 && importedSteps === 0 && importedImages === 0) {
+                                    message = `Aucune nouvelle donnée à importer.\nToutes les données existent déjà.`;
+                                }
+                                
+                                alert(message);
+                            }
+                        } catch (error) {
+                            alert('Erreur lors de l\'import : ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
         }
 
         // Export ZIP avec images
@@ -2354,7 +2420,29 @@
                 const filteredCases = getFilteredTestCases();
                 
                 // Ajouter le fichier CSV
-                const csvContent = generateCSVContent(filteredCases);
+                // Générer le contenu CSV simple
+                const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Images', 'Résultat', 'Date'];
+                const rows = filteredCases.map(tc => {
+                    const stepImagesList = tc.steps.map((step, index) => {
+                        const stepKey = `${tc.id}-${index}`;
+                        return stepImages[stepKey] ? 'OUI' : 'NON';
+                    });
+                    
+                    return [
+                        tc.id,
+                        tc.title || `Test Case #${tc.id}`,
+                        tc.testSuite || '',
+                        tc.status,
+                        tc.steps.join(' ˃ '),
+                        stepImagesList.join(' | '),
+                        tc.result || '',
+                        tc.timestamp
+                    ];
+                });
+                
+                const csvContent = [headers, ...rows]
+                    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+                    .join('\n');
                 zip.file('test-cases.csv', csvContent);
                 
                 // Ajouter le fichier Markdown
@@ -2410,37 +2498,6 @@
             }
         }
 
-        // Fonction utilitaire pour générer le contenu CSV
-        function generateCSVContent(casesToExport = null) {
-            const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Images', 'Résultat', 'Date'];
-            const cases = casesToExport || testCases;
-            const sortedCases = cases.sort((a, b) => {
-                const dateA = new Date(a.timestamp);
-                const dateB = new Date(b.timestamp);
-                return dateA - dateB;
-            });
-            const rows = sortedCases.map(tc => {
-                const stepImagesList = tc.steps.map((step, index) => {
-                    const stepKey = `${tc.id}-${index}`;
-                    return stepImages[stepKey] ? 'OUI' : 'NON';
-                });
-                
-                return [
-                    tc.id,
-                    tc.title || `Test Case #${tc.id}`,
-                    tc.testSuite || '',
-                    tc.status,
-                    tc.steps.join(' ˃ '),
-                    stepImagesList.join(' | '),
-                    tc.result || '',
-                    tc.timestamp
-                ];
-            });
-            
-            return [headers, ...rows]
-                .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-                .join('\n');
-        }
 
         // Fonction utilitaire pour générer le contenu Markdown
         function generateMarkdownContent(casesToExport = null) {
@@ -2559,117 +2616,6 @@
         }
 
         // Import CSV
-        function handleCSVImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const csv = e.target.result;
-                    const lines = csv.split('\n').filter(line => line.trim());
-                    
-                    if (lines.length < 2) {
-                        alert('Fichier CSV invalide ou vide');
-                        return;
-                    }
-                    
-                    // Ignorer la première ligne (en-têtes)
-                    const dataLines = lines.slice(1);
-                    let importedCount = 0;
-                    
-                    dataLines.forEach(line => {
-                        const columns = parseCSVLine(line);
-                        if (columns.length >= 7) {
-                            // Gérer l'ancien format (7 colonnes) et le nouveau format (8 colonnes)
-                            let title, testSuite, status, stepsStr, result, timestamp, duration;
-                            
-                            if (columns.length >= 8) {
-                                // Nouveau format avec titre
-                                [, title, testSuite, status, stepsStr, result, timestamp, duration] = columns;
-                            } else {
-                                // Ancien format sans titre
-                                [, testSuite, status, stepsStr, result, timestamp, duration] = columns;
-                                title = '';
-                            }
-                            
-                            const testCase = {
-                                id: testCaseCounter++,
-                                title: title || `Test Case #${testCaseCounter - 1}`,
-                                testSuite: testSuite || null,
-                                status: status || 'pending',
-                                steps: stepsStr.split(' ˃ ').filter(s => s.trim()),
-                                result: result || '',
-                                timestamp: timestamp || new Date().toISOString(),
-                                duration: 0
-                            };
-                            
-                            testCases.unshift(testCase);
-                            
-                            // Ajouter les étapes aux étapes sauvegardées
-                            testCase.steps.forEach(step => savedSteps.add(step));
-                            
-                            // Ajouter le jeu de test s'il n'existe pas
-                            if (testCase.testSuite && !testSuites.includes(testCase.testSuite)) {
-                                testSuites.push(testCase.testSuite);
-                            }
-                            
-                            importedCount++;
-                        }
-                    });
-                    
-                    if (importedCount > 0) {
-                        // Nettoyer les jeux de test vides après import
-                        cleanupEmptyTestSuites();
-                        
-                        updateTestSuiteSelectors();
-                        updateDisplay();
-                        saveData();
-                        alert(`✅ ${importedCount} cas de test importés avec succès !`);
-                    } else {
-                        alert('❌ Aucun cas de test valide trouvé dans le fichier');
-                    }
-                    
-                } catch (error) {
-                    alert('❌ Erreur lors de l\'import du fichier CSV');
-                    console.error('Erreur import CSV:', error);
-                }
-            };
-            
-            reader.readAsText(file);
-            closeModal();
-            
-            // Reset input
-            event.target.value = '';
-        }
-
-        // Parser CSV simple (gère les guillemets)
-        function parseCSVLine(line) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                
-                if (char === '"') {
-                    if (inQuotes && line[i + 1] === '"') {
-                        current += '"';
-                        i++;
-                    } else {
-                        inQuotes = !inQuotes;
-                    }
-                } else if (char === ',' && !inQuotes) {
-                    result.push(current);
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            
-            result.push(current);
-            return result;
-        }
 
         // Générer le rapport
         function generateReport(casesToExport = null) {
@@ -2944,7 +2890,5 @@
         });
     </script>
     
-    <!-- Input caché pour l'import CSV -->
-    <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="handleCSVImport(event)">
 </body>
 </html>
