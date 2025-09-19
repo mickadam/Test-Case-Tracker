@@ -147,6 +147,13 @@
             margin-bottom: 10px;
         }
 
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+            margin-right: 0;
+            margin-bottom: 0;
+        }
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
@@ -466,6 +473,100 @@
             background: #f8f9fa;
             border-radius: 6px;
             border-left: 4px solid #3498db;
+        }
+
+        .step-image {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 4px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e1e8ed;
+        }
+
+        .step-image:hover {
+            transform: scale(1.05);
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .step-image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            cursor: pointer;
+        }
+
+        .step-image-modal img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .inline-step-image-indicator {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            text-align: center;
+            line-height: 16px;
+            margin-left: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .inline-step-image-indicator:hover {
+            background: #2980b9;
+            transform: scale(1.2);
+        }
+
+        .inline-step-image-indicator:hover::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid #2980b9;
+        }
+
+        .inline-step-thumbnail {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            max-width: 200px;
+            max-height: 150px;
+            display: none;
+        }
+
+        .inline-step-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 4px;
+            display: block;
         }
 
         .test-result {
@@ -909,13 +1010,20 @@
                     <input type="text" id="testTitleInput" placeholder="Ex: Test de connexion HTTP">
                 </div>
 
+                
+                <div id="currentSteps" style="margin: 15px 0;"></div>
+
+
                 <div class="input-group">
                     <label for="stepInput">Étape du test :</label>
                     <input type="text" id="stepInput" placeholder="Ex: Ouverture de conf">
-                    <button class="btn" onclick="addStep()">Ajouter Étape</button>
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button class="btn btn-small" onclick="addStep()">Ajouter Étape</button>
+                        <button class="btn btn-small" onclick="document.getElementById('stepImageInput').click()" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">📷 Charger Image</button>
+                        <button class="btn btn-small" onclick="pasteFromClipboard()" style="background: linear-gradient(135deg, #e67e22, #d35400);">📋 Coller Screenshot</button>
+                        <input type="file" id="stepImageInput" accept="image/*" style="display: none;" onchange="addStepWithImage()">
+                    </div>
                 </div>
-
-                <div id="currentSteps" style="margin: 15px 0;"></div>
 
                 <div class="input-group">
                     <label for="resultInput">Résultat observé :</label>
@@ -997,6 +1105,7 @@
         let testSuites = [];
         let currentTestSuite = '';
         let filteredTestSuite = '';
+        let stepImages = {}; // Stockage des images par étape
 
         // Formater une date en format français
         function formatDate(dateString) {
@@ -1052,6 +1161,8 @@
             const savedData = localStorage.getItem('testCaseData');
             const savedStepsData = localStorage.getItem('savedStepsData');
             const savedSuitesData = localStorage.getItem('testSuitesData');
+            const savedImagesData = localStorage.getItem('stepImagesData');
+            
             if (savedData) {
                 testCases = JSON.parse(savedData);
                 testCaseCounter = testCases.length > 0 ? Math.max(...testCases.map(tc => tc.id)) + 1 : 1;
@@ -1063,6 +1174,10 @@
             
             if (savedSuitesData) {
                 testSuites = JSON.parse(savedSuitesData);
+            }
+            
+            if (savedImagesData) {
+                stepImages = JSON.parse(savedImagesData);
             }
             
             updateTestSuiteSelectors();
@@ -1078,6 +1193,7 @@
             localStorage.setItem('testCaseData', JSON.stringify(testCases));
             localStorage.setItem('savedStepsData', JSON.stringify([...savedSteps]));
             localStorage.setItem('testSuitesData', JSON.stringify(testSuites));
+            localStorage.setItem('stepImagesData', JSON.stringify(stepImages));
         }
 
         // Gestion des jeux de test
@@ -1198,21 +1314,209 @@
             }
         }
 
+        // Ajouter une étape avec image
+        function addStepWithImage() {
+            const fileInput = document.getElementById('stepImageInput');
+            const file = fileInput.files[0];
+            
+            if (!file) return;
+            
+            // Vérifier que c'est bien une image
+            if (!file.type.startsWith('image/')) {
+                alert('Veuillez sélectionner un fichier image valide.');
+                return;
+            }
+            
+            // Vérifier la taille (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('L\'image est trop volumineuse. Taille maximum : 5MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const stepInput = document.getElementById('stepInput');
+                const step = stepInput.value.trim() || 'Screenshot ajouté';
+                
+                // Ajouter l'étape
+                currentSteps.push(step);
+                savedSteps.add(step);
+                
+                // Stocker l'image
+                const stepKey = `current-${currentSteps.length - 1}`;
+                stepImages[stepKey] = e.target.result;
+                
+                stepInput.value = '';
+                fileInput.value = '';
+                
+                if (!currentTestStartTime) {
+                    currentTestStartTime = new Date();
+                }
+                
+                updateCurrentStepsDisplay();
+                updateSavedStepsDisplay();
+                saveData();
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // Coller une image depuis le presse-papier
+        async function pasteFromClipboard() {
+            try {
+                // Vérifier si l'API Clipboard est disponible
+                if (!navigator.clipboard || !navigator.clipboard.read) {
+                    alert('Le collage depuis le presse-papier n\'est pas supporté par votre navigateur. Utilisez le bouton "Screenshot" à la place.');
+                    return;
+                }
+
+                // Lire le contenu du presse-papier
+                const clipboardItems = await navigator.clipboard.read();
+                
+                // Chercher une image dans le presse-papier
+                for (const clipboardItem of clipboardItems) {
+                    for (const type of clipboardItem.types) {
+                        if (type.startsWith('image/')) {
+                            const blob = await clipboardItem.getType(type);
+                            
+                            // Vérifier la taille (max 5MB)
+                            if (blob.size > 5 * 1024 * 1024) {
+                                alert('L\'image dans le presse-papier est trop volumineuse. Taille maximum : 5MB');
+                                return;
+                            }
+                            
+                            // Convertir en base64
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const stepInput = document.getElementById('stepInput');
+                                const step = stepInput.value.trim() || 'Screenshot collé';
+                                
+                                // Ajouter l'étape
+                                currentSteps.push(step);
+                                savedSteps.add(step);
+                                
+                                // Stocker l'image
+                                const stepKey = `current-${currentSteps.length - 1}`;
+                                stepImages[stepKey] = e.target.result;
+                                
+                                stepInput.value = '';
+                                
+                                if (!currentTestStartTime) {
+                                    currentTestStartTime = new Date();
+                                }
+                                
+                                updateCurrentStepsDisplay();
+                                updateSavedStepsDisplay();
+                                saveData();
+                            };
+                            
+                            reader.readAsDataURL(blob);
+                            return;
+                        }
+                    }
+                }
+                
+                alert('Aucune image trouvée dans le presse-papier. Faites d\'abord un screenshot (Win+Shift+S ou Cmd+Shift+4) puis réessayez.');
+                
+            } catch (error) {
+                console.error('Erreur lors du collage:', error);
+                
+                // Messages d'erreur plus spécifiques
+                if (error.name === 'NotAllowedError') {
+                    alert('Permission refusée pour accéder au presse-papier. Vérifiez les permissions de votre navigateur.');
+                } else if (error.name === 'NotFoundError') {
+                    alert('Aucune image trouvée dans le presse-papier. Faites d\'abord un screenshot (Win+Shift+S) puis réessayez.');
+                } else {
+                    alert('Erreur lors du collage depuis le presse-papier. Assurez-vous d\'avoir fait un screenshot récemment et que votre navigateur supporte cette fonctionnalité.');
+                }
+            }
+        }
+
         // Afficher les étapes courantes
         function updateCurrentStepsDisplay() {
             const container = document.getElementById('currentSteps');
-            container.innerHTML = currentSteps.map((step, index) => 
-                `<div class="test-step">
+            container.innerHTML = currentSteps.map((step, index) => {
+                const stepKey = `current-${index}`;
+                const image = stepImages[stepKey];
+                const imageHtml = image ? `<img src="${image}" class="step-image" onclick="showImageModal('${image}')" title="Cliquer pour agrandir">` : '';
+                
+                return `<div class="test-step">
                     <span class="current-step-editable" onclick="editCurrentStep(${index})" title="Cliquer pour modifier cette étape">${index + 1}. ${step}</span>
+                    ${imageHtml}
                     <button style="float: right; background: none; border: none; color: #e74c3c; cursor: pointer;" onclick="removeCurrentStep(${index})">✕</button>
-                </div>`
-            ).join('');
+                </div>`;
+            }).join('');
         }
 
         // Supprimer une étape courante
         function removeCurrentStep(index) {
+            // Supprimer l'image associée si elle existe
+            const stepKey = `current-${index}`;
+            if (stepImages[stepKey]) {
+                delete stepImages[stepKey];
+            }
+            
             currentSteps.splice(index, 1);
+            
+            // Réorganiser les clés d'images pour les étapes suivantes
+            const newStepImages = {};
+            Object.keys(stepImages).forEach(key => {
+                if (key.startsWith('current-')) {
+                    const keyIndex = parseInt(key.split('-')[1]);
+                    if (keyIndex > index) {
+                        newStepImages[`current-${keyIndex - 1}`] = stepImages[key];
+                    } else if (keyIndex < index) {
+                        newStepImages[key] = stepImages[key];
+                    }
+                } else {
+                    newStepImages[key] = stepImages[key];
+                }
+            });
+            stepImages = newStepImages;
+            
             updateCurrentStepsDisplay();
+            saveData();
+        }
+
+        // Afficher l'image en modal
+        function showImageModal(imageSrc) {
+            const modal = document.createElement('div');
+            modal.className = 'step-image-modal';
+            modal.onclick = () => modal.remove();
+            modal.innerHTML = `<img src="${imageSrc}" alt="Screenshot">`;
+            document.body.appendChild(modal);
+        }
+
+        // Afficher la miniature au survol
+        function showInlineThumbnail(event, imageSrc) {
+            // Supprimer toute miniature existante
+            hideInlineThumbnail();
+            
+            const indicator = event.target;
+            const thumbnail = document.createElement('div');
+            thumbnail.className = 'inline-step-thumbnail';
+            thumbnail.innerHTML = `<img src="${imageSrc}" alt="Miniature">`;
+            
+            // Positionner la miniature
+            const rect = indicator.getBoundingClientRect();
+            thumbnail.style.position = 'fixed';
+            thumbnail.style.top = (rect.bottom + 5) + 'px';
+            thumbnail.style.left = (rect.left + rect.width / 2) + 'px';
+            thumbnail.style.transform = 'translateX(-50%)';
+            thumbnail.style.display = 'block';
+            
+            document.body.appendChild(thumbnail);
+            
+            // Supprimer la miniature si on quitte l'indicateur
+            indicator.addEventListener('mouseleave', hideInlineThumbnail, { once: true });
+        }
+
+        // Masquer la miniature
+        function hideInlineThumbnail() {
+            const existingThumbnail = document.querySelector('.inline-step-thumbnail');
+            if (existingThumbnail) {
+                existingThumbnail.remove();
+            }
         }
 
         // Éditer une étape courante
@@ -1324,6 +1628,16 @@
                 duration: duration,
                 testSuite: currentTestSuite
             };
+
+            // Transférer les images des étapes courantes vers les étapes sauvegardées
+            currentSteps.forEach((step, index) => {
+                const currentKey = `current-${index}`;
+                const savedKey = `${testCase.id}-${index}`;
+                if (stepImages[currentKey]) {
+                    stepImages[savedKey] = stepImages[currentKey];
+                    delete stepImages[currentKey];
+                }
+            });
 
             testCases.unshift(testCase);
             clearCurrentTest();
@@ -1628,11 +1942,16 @@
                         </div>
                         
                         <div class="test-steps">
-                            ${testCase.steps.map((step, index) => 
-                                `<div class="test-step test-step-editable" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">
+                            ${testCase.steps.map((step, index) => {
+                                const stepKey = `${testCase.id}-${index}`;
+                                const image = stepImages[stepKey];
+                                const imageHtml = image ? `<img src="${image}" class="step-image" onclick="showImageModal('${image}')" title="Cliquer pour agrandir">` : '';
+                                
+                                return `<div class="test-step test-step-editable" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">
                                     ${index + 1}. ${step}
-                                </div>`
-                            ).join('')}
+                                    ${imageHtml}
+                                </div>`;
+                            }).join('')}
                         </div>
                         
                         ${testCase.result ? `<div class="test-result test-result-editable" onclick="editResult(${testCase.id})" title="Cliquer pour modifier le résultat"><strong>Résultat :</strong> ${testCase.result}</div>` : ''}
@@ -1704,11 +2023,20 @@
                     }[testCase.status];
 
                     // Créer le flux d'étapes avec chevrons (icône)
-                    const stepsFlow = testCase.steps.map((step, index) => 
-                        `<span class="inline-step" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">
-                            ${step}
-                        </span>`
-                    ).join('<span class="step-chevron">˃</span>');
+                    const stepsFlow = testCase.steps.map((step, index) => {
+                        const stepKey = `${testCase.id}-${index}`;
+                        const image = stepImages[stepKey];
+                        const imageIndicator = image ? 
+                            `<span class="inline-step-image-indicator" 
+                                   onclick="event.stopPropagation(); showImageModal('${image}')" 
+                                   title="Cliquer pour voir l'image complète"
+                                   onmouseenter="showInlineThumbnail(event, '${image}')"
+                                   onmouseleave="hideInlineThumbnail(event)">📷</span>` : '';
+                        
+                        return `<span class="inline-step" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">
+                            ${step}${imageIndicator}
+                        </span>`;
+                    }).join('<span class="step-chevron">˃</span>');
 
                     const resultSummary = testCase.result || 'Pas de résultat spécifié';
 
@@ -2425,6 +2753,22 @@
                 });
             }
             
+            // Gestion du collage global (Ctrl+V)
+            document.addEventListener('paste', function(e) {
+                // Vérifier si on est dans un champ de saisie
+                const activeElement = document.activeElement;
+                const isInputField = activeElement && (
+                    activeElement.tagName === 'INPUT' || 
+                    activeElement.tagName === 'TEXTAREA' ||
+                    activeElement.contentEditable === 'true'
+                );
+                
+                // Si on n'est pas dans un champ de saisie, essayer de coller une image
+                if (!isInputField) {
+                    e.preventDefault();
+                    pasteFromClipboard();
+                }
+            });
             
             // Initialisation
             loadData();
