@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Outil de Suivi de Cas de Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -2211,6 +2212,14 @@
                         </div>
                     </div>
                     
+                    <div class="export-option" onclick="exportToZIP()">
+                        <span style="font-size: 24px;">📦</span>
+                        <div>
+                            <strong>Export ZIP avec Images</strong>
+                            <div style="font-size: 12px; color: #7f8c8d;">Archive complète avec toutes les images</div>
+                        </div>
+                    </div>
+                    
                     <div class="export-option" onclick="exportToMarkdown()">
                         <span style="font-size: 24px;">📝</span>
                         <div>
@@ -2286,21 +2295,30 @@
 
         // Export CSV
         function exportToCSV() {
-            const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Résultat', 'Date'];
+            const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Images', 'Résultat', 'Date'];
             const sortedCases = testCases.sort((a, b) => {
                 const dateA = new Date(a.timestamp);
                 const dateB = new Date(b.timestamp);
                 return dateA - dateB; // Plus vieux en premier
             });
-            const rows = sortedCases.map(tc => [
-                tc.id,
-                tc.title || `Test Case #${tc.id}`,
-                tc.testSuite || '',
-                tc.status,
-                tc.steps.join(' ˃ '),
-                tc.result || '',
-                tc.timestamp
-            ]);
+            const rows = sortedCases.map(tc => {
+                // Compter les images pour chaque étape
+                const stepImagesList = tc.steps.map((step, index) => {
+                    const stepKey = `${tc.id}-${index}`;
+                    return stepImages[stepKey] ? 'OUI' : 'NON';
+                });
+                
+                return [
+                    tc.id,
+                    tc.title || `Test Case #${tc.id}`,
+                    tc.testSuite || '',
+                    tc.status,
+                    tc.steps.join(' ˃ '),
+                    stepImagesList.join(' | '),
+                    tc.result || '',
+                    tc.timestamp
+                ];
+            });
             
             const csvContent = [headers, ...rows]
                 .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
@@ -2308,6 +2326,166 @@
             
             downloadFile(csvContent, 'text/csv;charset=utf-8', `test-cases-${new Date().toISOString().split('T')[0]}.csv`);
             closeModal();
+        }
+
+        // Export ZIP avec images
+        async function exportToZIP() {
+            try {
+                const zip = new JSZip();
+                const imagesFolder = zip.folder('images');
+                
+                // Ajouter le fichier CSV
+                const csvContent = generateCSVContent();
+                zip.file('test-cases.csv', csvContent);
+                
+                // Ajouter le fichier Markdown
+                const mdContent = generateMarkdownContent();
+                zip.file('test-report.md', mdContent);
+                
+                // Ajouter toutes les images
+                let imageCount = 0;
+                Object.keys(stepImages).forEach(key => {
+                    if (stepImages[key]) {
+                        const imageData = stepImages[key];
+                        const extension = imageData.split(';')[0].split('/')[1] || 'png';
+                        const filename = `image_${key.replace(/[^a-zA-Z0-9]/g, '_')}.${extension}`;
+                        const base64Data = imageData.split(',')[1];
+                        
+                        imagesFolder.file(filename, base64Data, { base64: true });
+                        imageCount++;
+                    }
+                });
+                
+                // Ajouter un fichier de métadonnées
+                const metadata = {
+                    exportDate: new Date().toISOString(),
+                    totalTestCases: testCases.length,
+                    totalImages: imageCount,
+                    version: '1.0'
+                };
+                zip.file('metadata.json', JSON.stringify(metadata, null, 2));
+                
+                // Générer et télécharger le ZIP
+                const content = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `test-cases-with-images-${new Date().toISOString().split('T')[0]}.zip`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                closeModal();
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'export ZIP:', error);
+                alert('Erreur lors de la création de l\'archive ZIP. Vérifiez que JSZip est chargé.');
+            }
+        }
+
+        // Fonction utilitaire pour générer le contenu CSV
+        function generateCSVContent() {
+            const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Images', 'Résultat', 'Date'];
+            const sortedCases = testCases.sort((a, b) => {
+                const dateA = new Date(a.timestamp);
+                const dateB = new Date(b.timestamp);
+                return dateA - dateB;
+            });
+            const rows = sortedCases.map(tc => {
+                const stepImagesList = tc.steps.map((step, index) => {
+                    const stepKey = `${tc.id}-${index}`;
+                    return stepImages[stepKey] ? 'OUI' : 'NON';
+                });
+                
+                return [
+                    tc.id,
+                    tc.title || `Test Case #${tc.id}`,
+                    tc.testSuite || '',
+                    tc.status,
+                    tc.steps.join(' ˃ '),
+                    stepImagesList.join(' | '),
+                    tc.result || '',
+                    tc.timestamp
+                ];
+            });
+            
+            return [headers, ...rows]
+                .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+                .join('\n');
+        }
+
+        // Fonction utilitaire pour générer le contenu Markdown
+        function generateMarkdownContent() {
+            const stats = {
+                total: testCases.length,
+                todo: testCases.filter(tc => tc.status === 'todo').length,
+                ok: testCases.filter(tc => tc.status === 'ok').length,
+                ko: testCases.filter(tc => tc.status === 'ko').length,
+                pending: testCases.filter(tc => tc.status === 'pending').length
+            };
+
+            let md = `# 🧪 Rapport de Tests\n\n`;
+            md += `**Date de génération :** ${new Date().toLocaleDateString('fr-FR')}\n\n`;
+            
+            md += `## 📊 Statistiques\n\n`;
+            md += `| Métrique | Valeur |\n`;
+            md += `|----------|--------|\n`;
+            md += `| Total des tests | ${stats.total} |\n`;
+            md += `| 📋 À faire | ${stats.todo} |\n`;
+            md += `| ⏳ En cours | ${stats.pending} |\n`;
+            md += `| ✅ Succès | ${stats.ok} |\n`;
+            md += `| ❌ Échecs | ${stats.ko} |\n\n`;
+
+            // Grouper par jeux de test
+            const groupedCases = {};
+            const sortedCases = testCases.sort((a, b) => {
+                const dateA = new Date(a.timestamp);
+                const dateB = new Date(b.timestamp);
+                return dateA - dateB;
+            });
+            sortedCases.forEach(testCase => {
+                const suite = testCase.testSuite || 'Sans jeu';
+                if (!groupedCases[suite]) {
+                    groupedCases[suite] = [];
+                }
+                groupedCases[suite].push(testCase);
+            });
+
+            Object.entries(groupedCases).forEach(([suiteName, cases]) => {
+                md += `## 📦 ${suiteName}\n\n`;
+                
+                cases.forEach(testCase => {
+                    const statusIcon = {
+                        'todo': '📋',
+                        'ok': '✅',
+                        'ko': '❌',
+                        'pending': '⏳'
+                    }[testCase.status];
+                    
+                    md += `### ${statusIcon} ${testCase.title || `Test Case #${testCase.id}`}\n\n`;
+                    md += `**Étapes :**\n`;
+                    testCase.steps.forEach((step, index) => {
+                        const stepKey = `${testCase.id}-${index}`;
+                        const hasImage = stepImages[stepKey];
+                        if (hasImage) {
+                            const extension = hasImage.split(';')[0].split('/')[1] || 'png';
+                            const filename = `image_${stepKey.replace(/[^a-zA-Z0-9]/g, '_')}.${extension}`;
+                            md += `${index + 1}. ${step} \n\n   ![Screenshot de l'étape ${index + 1}](./images/${filename})\n`;
+                        } else {
+                            md += `${index + 1}. ${step}\n`;
+                        }
+                    });
+                    md += `\n`;
+                    
+                    if (testCase.result) {
+                        md += `**Résultat :** ${testCase.result}\n\n`;
+                    }
+                    
+                    md += `\n`;
+                    md += `---\n\n`;
+                });
+            });
+            
+            return md;
         }
 
         // Export Markdown
