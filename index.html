@@ -2296,12 +2296,8 @@
         // Export CSV
         function exportToCSV() {
             const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Images', 'Résultat', 'Date'];
-            const sortedCases = testCases.sort((a, b) => {
-                const dateA = new Date(a.timestamp);
-                const dateB = new Date(b.timestamp);
-                return dateA - dateB; // Plus vieux en premier
-            });
-            const rows = sortedCases.map(tc => {
+            const filteredCases = getFilteredTestCases();
+            const rows = filteredCases.map(tc => {
                 // Compter les images pour chaque étape
                 const stepImagesList = tc.steps.map((step, index) => {
                     const stepKey = `${tc.id}-${index}`;
@@ -2324,7 +2320,11 @@
                 .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
                 .join('\n');
             
-            downloadFile(csvContent, 'text/csv;charset=utf-8', `test-cases-${new Date().toISOString().split('T')[0]}.csv`);
+            const filename = filteredTestSuite ? 
+                `test-cases-${filteredTestSuite}-${new Date().toISOString().split('T')[0]}.csv` :
+                `test-cases-all-${new Date().toISOString().split('T')[0]}.csv`;
+            
+            downloadFile(csvContent, 'text/csv;charset=utf-8', filename);
             closeModal();
         }
 
@@ -2333,33 +2333,38 @@
             try {
                 const zip = new JSZip();
                 const imagesFolder = zip.folder('images');
+                const filteredCases = getFilteredTestCases();
                 
                 // Ajouter le fichier CSV
-                const csvContent = generateCSVContent();
+                const csvContent = generateCSVContent(filteredCases);
                 zip.file('test-cases.csv', csvContent);
                 
                 // Ajouter le fichier Markdown
-                const mdContent = generateMarkdownContent();
+                const mdContent = generateMarkdownContent(filteredCases);
                 zip.file('test-report.md', mdContent);
                 
-                // Ajouter toutes les images
+                // Ajouter seulement les images des cas de test filtrés
                 let imageCount = 0;
-                Object.keys(stepImages).forEach(key => {
-                    if (stepImages[key]) {
-                        const imageData = stepImages[key];
-                        const extension = imageData.split(';')[0].split('/')[1] || 'png';
-                        const filename = `image_${key.replace(/[^a-zA-Z0-9]/g, '_')}.${extension}`;
-                        const base64Data = imageData.split(',')[1];
-                        
-                        imagesFolder.file(filename, base64Data, { base64: true });
-                        imageCount++;
-                    }
+                filteredCases.forEach(testCase => {
+                    testCase.steps.forEach((step, index) => {
+                        const stepKey = `${testCase.id}-${index}`;
+                        if (stepImages[stepKey]) {
+                            const imageData = stepImages[stepKey];
+                            const extension = imageData.split(';')[0].split('/')[1] || 'png';
+                            const filename = `image_${stepKey.replace(/[^a-zA-Z0-9]/g, '_')}.${extension}`;
+                            const base64Data = imageData.split(',')[1];
+                            
+                            imagesFolder.file(filename, base64Data, { base64: true });
+                            imageCount++;
+                        }
+                    });
                 });
                 
                 // Ajouter un fichier de métadonnées
                 const metadata = {
                     exportDate: new Date().toISOString(),
-                    totalTestCases: testCases.length,
+                    testSuite: filteredTestSuite || 'Tous les jeux de test',
+                    totalTestCases: filteredCases.length,
                     totalImages: imageCount,
                     version: '1.0'
                 };
@@ -2370,7 +2375,12 @@
                 const url = URL.createObjectURL(content);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `test-cases-with-images-${new Date().toISOString().split('T')[0]}.zip`;
+                
+                const filename = filteredTestSuite ? 
+                    `test-cases-${filteredTestSuite}-${new Date().toISOString().split('T')[0]}.zip` :
+                    `test-cases-all-${new Date().toISOString().split('T')[0]}.zip`;
+                
+                a.download = filename;
                 a.click();
                 URL.revokeObjectURL(url);
                 
@@ -2383,9 +2393,10 @@
         }
 
         // Fonction utilitaire pour générer le contenu CSV
-        function generateCSVContent() {
+        function generateCSVContent(casesToExport = null) {
             const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Images', 'Résultat', 'Date'];
-            const sortedCases = testCases.sort((a, b) => {
+            const cases = casesToExport || testCases;
+            const sortedCases = cases.sort((a, b) => {
                 const dateA = new Date(a.timestamp);
                 const dateB = new Date(b.timestamp);
                 return dateA - dateB;
@@ -2414,17 +2425,22 @@
         }
 
         // Fonction utilitaire pour générer le contenu Markdown
-        function generateMarkdownContent() {
+        function generateMarkdownContent(casesToExport = null) {
+            const cases = casesToExport || testCases;
             const stats = {
-                total: testCases.length,
-                todo: testCases.filter(tc => tc.status === 'todo').length,
-                ok: testCases.filter(tc => tc.status === 'ok').length,
-                ko: testCases.filter(tc => tc.status === 'ko').length,
-                pending: testCases.filter(tc => tc.status === 'pending').length
+                total: cases.length,
+                todo: cases.filter(tc => tc.status === 'todo').length,
+                ok: cases.filter(tc => tc.status === 'ok').length,
+                ko: cases.filter(tc => tc.status === 'ko').length,
+                pending: cases.filter(tc => tc.status === 'pending').length
             };
 
             let md = `# 🧪 Rapport de Tests\n\n`;
-            md += `**Date de génération :** ${new Date().toLocaleDateString('fr-FR')}\n\n`;
+            md += `**Date de génération :** ${new Date().toLocaleDateString('fr-FR')}\n`;
+            if (filteredTestSuite) {
+                md += `**Jeu de test :** ${filteredTestSuite}\n`;
+            }
+            md += `\n`;
             
             md += `## 📊 Statistiques\n\n`;
             md += `| Métrique | Valeur |\n`;
@@ -2437,7 +2453,7 @@
 
             // Grouper par jeux de test
             const groupedCases = {};
-            const sortedCases = testCases.sort((a, b) => {
+            const sortedCases = cases.sort((a, b) => {
                 const dateA = new Date(a.timestamp);
                 const dateB = new Date(b.timestamp);
                 return dateA - dateB;
@@ -2490,76 +2506,27 @@
 
         // Export Markdown
         function exportToMarkdown() {
-            const stats = {
-                total: testCases.length,
-                todo: testCases.filter(tc => tc.status === 'todo').length,
-                ok: testCases.filter(tc => tc.status === 'ok').length,
-                ko: testCases.filter(tc => tc.status === 'ko').length,
-                pending: testCases.filter(tc => tc.status === 'pending').length
-            };
-
-            let md = `# 🧪 Rapport de Tests\n\n`;
-            md += `**Date de génération :** ${new Date().toLocaleDateString('fr-FR')}\n\n`;
+            const filteredCases = getFilteredTestCases();
+            const mdContent = generateMarkdownContent(filteredCases);
             
-            md += `## 📊 Statistiques\n\n`;
-            md += `| Métrique | Valeur |\n`;
-            md += `|----------|--------|\n`;
-            md += `| Total des tests | ${stats.total} |\n`;
-            md += `| 📋 À faire | ${stats.todo} |\n`;
-            md += `| ⏳ En cours | ${stats.pending} |\n`;
-            md += `| ✅ Succès | ${stats.ok} |\n`;
-            md += `| ❌ Échecs | ${stats.ko} |\n\n`;
-
-            // Grouper par jeux de test
-            const groupedCases = {};
-            const sortedCases = testCases.sort((a, b) => {
-                const dateA = new Date(a.timestamp);
-                const dateB = new Date(b.timestamp);
-                return dateA - dateB; // Plus vieux en premier
-            });
-            sortedCases.forEach(testCase => {
-                const suite = testCase.testSuite || 'Sans jeu';
-                if (!groupedCases[suite]) {
-                    groupedCases[suite] = [];
-                }
-                groupedCases[suite].push(testCase);
-            });
-
-            Object.entries(groupedCases).forEach(([suiteName, cases]) => {
-                md += `## 📦 ${suiteName}\n\n`;
-                
-                cases.forEach(testCase => {
-                    const statusIcon = {
-                        'todo': '📋',
-                        'ok': '✅',
-                        'ko': '❌',
-                        'pending': '⏳'
-                    }[testCase.status];
-                    
-                    md += `### ${statusIcon} ${testCase.title || `Test Case #${testCase.id}`}\n\n`;
-                    md += `**Étapes :**\n`;
-                    testCase.steps.forEach((step, index) => {
-                        md += `${index + 1}. ${step}\n`;
-                    });
-                    md += `\n`;
-                    
-                    if (testCase.result) {
-                        md += `**Résultat :** ${testCase.result}\n\n`;
-                    }
-                    
-                    md += `\n`;
-                    md += `---\n\n`;
-                });
-            });
+            const filename = filteredTestSuite ? 
+                `test-report-${filteredTestSuite}-${new Date().toISOString().split('T')[0]}.md` :
+                `test-report-all-${new Date().toISOString().split('T')[0]}.md`;
             
-            downloadFile(md, 'text/markdown;charset=utf-8', `test-report-${new Date().toISOString().split('T')[0]}.md`);
+            downloadFile(mdContent, 'text/markdown;charset=utf-8', filename);
             closeModal();
         }
 
         // Export TXT (format original)
         function exportToTXT() {
-            const report = generateReport();
-            downloadFile(report, 'text/plain;charset=utf-8', `test-report-${new Date().toISOString().split('T')[0]}.txt`);
+            const filteredCases = getFilteredTestCases();
+            const report = generateReport(filteredCases);
+            
+            const filename = filteredTestSuite ? 
+                `test-report-${filteredTestSuite}-${new Date().toISOString().split('T')[0]}.txt` :
+                `test-report-all-${new Date().toISOString().split('T')[0]}.txt`;
+            
+            downloadFile(report, 'text/plain;charset=utf-8', filename);
             closeModal();
         }
 
@@ -2687,16 +2654,20 @@
         }
 
         // Générer le rapport
-        function generateReport() {
+        function generateReport(casesToExport = null) {
+            const cases = casesToExport || testCases;
             const stats = {
-                total: testCases.length,
-                todo: testCases.filter(tc => tc.status === 'todo').length,
-                ok: testCases.filter(tc => tc.status === 'ok').length,
-                ko: testCases.filter(tc => tc.status === 'ko').length,
-                pending: testCases.filter(tc => tc.status === 'pending').length
+                total: cases.length,
+                todo: cases.filter(tc => tc.status === 'todo').length,
+                ok: cases.filter(tc => tc.status === 'ok').length,
+                ko: cases.filter(tc => tc.status === 'ko').length,
+                pending: cases.filter(tc => tc.status === 'pending').length
             };
 
             let report = `RAPPORT DE TEST - ${new Date().toLocaleDateString('fr-FR')}\n`;
+            if (filteredTestSuite) {
+                report += `JEU DE TEST: ${filteredTestSuite}\n`;
+            }
             report += `${'='.repeat(50)}\n\n`;
             report += `STATISTIQUES:\n`;
             report += `Total des cas de test: ${stats.total}\n`;
@@ -2705,7 +2676,7 @@
             report += `✅ OK: ${stats.ok}\n`;
             report += `❌ KO: ${stats.ko}\n\n`;
 
-            const sortedCases = testCases.sort((a, b) => {
+            const sortedCases = cases.sort((a, b) => {
                 const dateA = new Date(a.timestamp);
                 const dateB = new Date(b.timestamp);
                 return dateA - dateB; // Plus vieux en premier
@@ -2715,7 +2686,9 @@
                 report += `${testCase.title || `TEST CASE #${testCase.id}`} - ${testCase.status.toUpperCase()} - ${testCase.testSuite || 'Sans jeu'}\n`;
                 report += `Étapes:\n`;
                 testCase.steps.forEach((step, index) => {
-                    report += `  ${index + 1}. ${step}\n`;
+                    const stepKey = `${testCase.id}-${index}`;
+                    const hasImage = stepImages[stepKey] ? ' 📷' : '';
+                    report += `  ${index + 1}. ${step}${hasImage}\n`;
                 });
                 if (testCase.result) {
                     report += `Résultat: ${testCase.result}\n`;
