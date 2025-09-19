@@ -233,34 +233,7 @@
 
 
         /* Styles pour l'édition des étapes courantes */
-        .current-step-editable {
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
 
-        .current-step-editable:hover {
-            background: rgba(52, 152, 219, 0.1);
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-
-        .current-step-edit-btn {
-            background: rgba(52, 152, 219, 0.2);
-            border: none;
-            color: #2980b9;
-            padding: 2px 6px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 10px;
-            margin-left: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .current-step-edit-btn:hover {
-            background: rgba(52, 152, 219, 0.3);
-            transform: scale(1.1);
-        }
 
         .suite-name-editable {
             transition: all 0.3s ease;
@@ -288,6 +261,18 @@
         }
 
         .test-title-editable:hover, .inline-title-editable:hover {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .current-step-editable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .current-step-editable:hover {
             background: rgba(52, 152, 219, 0.1);
             padding: 2px 4px;
             border-radius: 3px;
@@ -1219,7 +1204,6 @@
             container.innerHTML = currentSteps.map((step, index) => 
                 `<div class="test-step">
                     <span class="current-step-editable" onclick="editCurrentStep(${index})" title="Cliquer pour modifier cette étape">${index + 1}. ${step}</span>
-                    <button class="current-step-edit-btn" onclick="editCurrentStep(${index})" title="Modifier cette étape">✏️</button>
                     <button style="float: right; background: none; border: none; color: #e74c3c; cursor: pointer;" onclick="removeCurrentStep(${index})">✕</button>
                 </div>`
             ).join('');
@@ -1231,8 +1215,6 @@
             updateCurrentStepsDisplay();
         }
 
-
-
         // Éditer une étape courante
         function editCurrentStep(index) {
             const currentStep = currentSteps[index];
@@ -1241,24 +1223,21 @@
             const element = event.target;
             const stepContainer = element.closest('.test-step');
             
-            // Créer un textarea temporaire
-            const textarea = document.createElement('textarea');
-            textarea.value = currentStep;
-            textarea.className = 'editing-input';
-            textarea.style.width = Math.max(200, currentStep.length * 8) + 'px';
-            textarea.style.minHeight = '60px';
-            textarea.style.resize = 'vertical';
-            textarea.style.fontFamily = 'inherit';
-            textarea.style.fontSize = 'inherit';
+            // Créer un input temporaire (une seule ligne)
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentStep;
+            input.className = 'editing-input';
+            input.style.width = Math.max(200, currentStep.length * 8) + 'px';
             
             // Remplacer temporairement l'élément
             const editableSpan = stepContainer.querySelector('.current-step-editable');
-            editableSpan.parentNode.replaceChild(textarea, editableSpan);
-            textarea.focus();
-            textarea.select();
+            editableSpan.parentNode.replaceChild(input, editableSpan);
+            input.focus();
+            input.select();
             
             function saveStep() {
-                const newStep = textarea.value.trim();
+                const newStep = input.value.trim();
                 if (newStep && newStep !== currentStep) {
                     currentSteps[index] = newStep;
                     // Mettre à jour aussi dans les étapes sauvegardées
@@ -1274,16 +1253,18 @@
                 updateCurrentStepsDisplay();
             }
             
-            textarea.addEventListener('blur', saveStep);
-            textarea.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
+            input.addEventListener('blur', saveStep);
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
                     saveStep();
                 } else if (e.key === 'Escape') {
                     cancelEdit();
                 }
             });
         }
+
+
+
 
         // Afficher les étapes sauvegardées
         function updateSavedStepsDisplay() {
@@ -1426,23 +1407,20 @@
             const element = event.target;
             const currentStep = testCase.steps[stepIndex];
             
-            // Créer un textarea temporaire
-            const textarea = document.createElement('textarea');
-            textarea.value = currentStep;
-            textarea.className = 'editing-input';
-            textarea.style.width = Math.max(200, currentStep.length * 8) + 'px';
-            textarea.style.minHeight = '60px';
-            textarea.style.resize = 'vertical';
-            textarea.style.fontFamily = 'inherit';
-            textarea.style.fontSize = 'inherit';
+            // Créer un input temporaire (une seule ligne)
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentStep;
+            input.className = 'editing-input';
+            input.style.width = Math.max(200, currentStep.length * 8) + 'px';
             
             // Remplacer temporairement l'élément
-            element.parentNode.replaceChild(textarea, element);
-            textarea.focus();
-            textarea.select();
+            element.parentNode.replaceChild(input, element);
+            input.focus();
+            input.select();
             
             function saveStep() {
-                const newStep = textarea.value.trim();
+                const newStep = input.value.trim();
                 if (newStep && newStep !== currentStep) {
                     testCase.steps[stepIndex] = newStep;
                     testCase.lastModified = new Date().toISOString();
@@ -1457,10 +1435,9 @@
                 updateDisplay();
             }
             
-            textarea.addEventListener('blur', saveStep);
-            textarea.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
+            input.addEventListener('blur', saveStep);
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
                     saveStep();
                 } else if (e.key === 'Escape') {
                     cancelEdit();
@@ -1744,7 +1721,7 @@
                                     ${stepsFlow}
                                 </div>
                                 <div class="inline-result" onclick="editResult(${testCase.id})" title="Cliquer pour modifier">
-                                    <strong>Résultat:</strong> ${resultSummary}
+                                    <strong>Résultat:</strong> <br> ${resultSummary}
                                 </div>
                             </div>
                             <div class="inline-actions">
