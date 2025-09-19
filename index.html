@@ -1107,6 +1107,7 @@
         let currentTestSuite = '';
         let filteredTestSuite = '';
         let stepImages = {}; // Stockage des images par étape
+        let lastUsedTestSuite = ''; // Dernier jeu de test utilisé
 
         // Formater une date en format français
         function formatDate(dateString) {
@@ -1163,6 +1164,7 @@
             const savedStepsData = localStorage.getItem('savedStepsData');
             const savedSuitesData = localStorage.getItem('testSuitesData');
             const savedImagesData = localStorage.getItem('stepImagesData');
+            const savedLastUsedSuite = localStorage.getItem('lastUsedTestSuite');
             
             if (savedData) {
                 testCases = JSON.parse(savedData);
@@ -1181,6 +1183,10 @@
                 stepImages = JSON.parse(savedImagesData);
             }
             
+            if (savedLastUsedSuite) {
+                lastUsedTestSuite = savedLastUsedSuite;
+            }
+            
             updateTestSuiteSelectors();
             
             // Nettoyer les jeux de test vides au chargement
@@ -1195,6 +1201,7 @@
             localStorage.setItem('savedStepsData', JSON.stringify([...savedSteps]));
             localStorage.setItem('testSuitesData', JSON.stringify(testSuites));
             localStorage.setItem('stepImagesData', JSON.stringify(stepImages));
+            localStorage.setItem('lastUsedTestSuite', lastUsedTestSuite);
         }
 
         // Gestion des jeux de test
@@ -1203,6 +1210,11 @@
             const headerSelector = document.getElementById('headerTestSuiteSelect');
             
             if (mainSelector) {
+                // Si aucun jeu n'est sélectionné et qu'on a un dernier jeu utilisé, l'utiliser
+                if (!currentTestSuite && lastUsedTestSuite) {
+                    currentTestSuite = lastUsedTestSuite;
+                }
+                
                 mainSelector.innerHTML = '<option value="">Sélectionner un jeu de test...</option>' + 
                     testSuites.map(suite => {
                         const suiteName = typeof suite === 'string' ? suite : suite.name;
@@ -1241,6 +1253,7 @@
             
             testSuites.push({ name: suiteName });
             currentTestSuite = suiteName;
+            lastUsedTestSuite = suiteName;
             input.value = '';
             
             updateTestSuiteSelectors();
@@ -1249,6 +1262,10 @@
 
         function switchTestSuite() {
             currentTestSuite = document.getElementById('testSuiteSelect').value;
+            if (currentTestSuite) {
+                lastUsedTestSuite = currentTestSuite;
+                saveData();
+            }
         }
 
         function switchTestSuiteFromHeader() {
@@ -1653,6 +1670,7 @@
             document.getElementById('testTitleInput').value = '';
             document.getElementById('resultInput').value = '';
             document.getElementById('statusSelect').value = 'todo';
+            // Ne pas réinitialiser currentTestSuite pour garder le dernier jeu utilisé
             updateCurrentStepsDisplay();
         }
 
