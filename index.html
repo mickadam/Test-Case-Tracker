@@ -153,14 +153,15 @@
             color: white;
             border: none;
             padding: 12px 25px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 400;
-            transition: all 0.2s ease;
+            font-weight: 500;
+            transition: all 0.3s ease;
             margin-right: 10px;
             margin-bottom: 10px;
             line-height: 1.4;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
         }
 
         .btn-small {
@@ -265,7 +266,8 @@
         }
 
         .btn:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.2);
         }
 
         .btn-success {
@@ -698,13 +700,31 @@
         .inline-actions button {
             border: none;
             cursor: pointer;
-            padding: 2px 5px;
-            border-radius: 3px;
-            transition: all 0.2s ease;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
         .inline-actions button:hover {
-            background: rgba(231, 76, 60, 0.1);
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .inline-actions button:nth-child(1):hover {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        }
+
+        .inline-actions button:nth-child(2):hover {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+        }
+
+        .inline-actions button:nth-child(3):hover {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
         }
 
         .test-suite-badge {
@@ -1547,10 +1567,10 @@
             container.innerHTML = filteredCases.map(testCase => {
                 const statusClass = `status-${testCase.status}`;
                 const statusText = {
-                    'todo': 'À faire',
-                    'ok': 'OK',
-                    'ko': 'KO',
-                    'pending': 'En cours'
+                    'todo': '📋',
+                    'ok': '✅ ',
+                    'ko': '❌',
+                    'pending': '⏳'
                 }[testCase.status];
 
                 return `
@@ -1656,7 +1676,7 @@
                         <div class="suite-header">
                             <span class="suite-name-editable" onclick="editTestSuiteName('${suiteName}')" style="font-size: 1.2em; font-weight: bold; cursor: pointer;" title="Cliquer pour modifier le nom du jeu de test">${suiteName}</span>
                             <span class="suite-stats">
-                                ${stats.total} tests | À faire: ${stats.todo} | OK: ${stats.ok} | KO: ${stats.ko} | En cours: ${stats.pending}
+                                ${stats.total} tests | 📋 ${stats.todo} | ✅ ${stats.ok} | ❌ ${stats.ko} | ⏳ ${stats.pending}
                             </span>
                         </div>
                         <div class="suite-content">
@@ -1664,9 +1684,9 @@
                 
                 cases.forEach(testCase => {
                     const statusIcon = {
-                        'todo': 'À faire',
-                        'ok': 'OK',
-                        'ko': 'KO',
+                        'todo': '📋',
+                        'ok': '✅',
+                        'ko': '❌',
                         'pending': '⏳'
                     }[testCase.status];
 
@@ -1703,7 +1723,6 @@
                                     <strong>Résultat:</strong> <br> ${resultSummary}
                                 </div>
                                 <div class="inline-specs" onclick="editAllSpecifications(${testCase.id})" title="Cliquer pour éditer les spécifications" style="cursor: pointer;">
-                                    <strong>Spécifications:</strong> <br> 
                                     ${specsSummary || '<span style="color: #7f8c8d; font-style: italic;">Aucune spécification définie</span>'}
                                 </div>
                             </div>
