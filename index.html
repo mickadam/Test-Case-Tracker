@@ -80,32 +80,41 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
+        .btn-add-suite {
+            background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 8px 12px !important;
+            cursor: pointer !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            transition: all 0.3s ease !important;
+            min-width: 40px !important;
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .btn-add-suite:hover {
+            background: linear-gradient(135deg, #229954, #27ae60) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3) !important;
+        }
+
         .main-content {
             display: grid;
-            grid-template-columns: 415px 1fr;
+            grid-template-columns: 1fr;
             gap: 30px;
             padding: 30px;
         }
 
-        .input-section {
-            width: 415px;
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .input-section h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
 
         .input-group {
             margin-bottom: 20px;
         }
+
 
         label {
             display: block;
@@ -155,6 +164,100 @@
             margin-bottom: 0;
         }
 
+        .step-image {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 4px;
+            margin: 5px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e1e8ed;
+        }
+
+        .step-image:hover {
+            transform: scale(1.05);
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .step-image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            cursor: pointer;
+        }
+
+        .step-image-modal img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .inline-step-image-indicator {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            text-align: center;
+            line-height: 16px;
+            margin-left: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .inline-step-image-indicator:hover {
+            background: #2980b9;
+            transform: scale(1.2);
+        }
+
+        .inline-step-image-indicator:hover::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid #2980b9;
+        }
+
+        .inline-step-thumbnail {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            max-width: 200px;
+            max-height: 150px;
+            display: none;
+        }
+
+        .inline-step-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 4px;
+            display: block;
+        }
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
@@ -176,71 +279,10 @@
             background: linear-gradient(135deg, #3498db, #2980b9);
         }
 
-        .saved-steps {
-            margin-top: 20px;
-            padding: 15px;
-            background: #ecf0f1;
-            border-radius: 8px;
-        }
-
-        .saved-steps h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .step-tag {
-            display: inline-flex;
-            align-items: center;
-            background: #3498db;
-            color: white;
-            border-radius: 15px;
-            font-size: 12px;
-            margin: 3px;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .step-tag:hover {
-            background: #2980b9;
-            transform: scale(1.05);
-        }
-
-        .step-text {
-            padding: 5px 8px;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .step-add-btn {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 8px;
-            cursor: pointer;
-            border-left: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-            font-size: 10px;
-        }
-
-        .step-add-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
-        }
-
-        .step-delete-btn {
-            background: rgba(231, 76, 60, 0.8);
-            padding: 5px 8px;
-            cursor: pointer;
-            border-left: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-            font-size: 10px;
-        }
-
-        .step-delete-btn:hover {
-            background: rgba(231, 76, 60, 1);
-            transform: scale(1.1);
-        }
 
 
-        /* Styles pour l'édition des étapes courantes */
+
+
 
 
         .suite-name-editable {
@@ -274,17 +316,6 @@
             border-radius: 3px;
         }
 
-        .current-step-editable {
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .current-step-editable:hover {
-            background: rgba(52, 152, 219, 0.1);
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
 
         .test-step-editable {
             cursor: pointer;
@@ -339,6 +370,23 @@
         .inline-result:hover {
             background: #bbdefb;
             border-left-color: #1976d2;
+        }
+
+        .inline-specs {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+            padding: 5px 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #6c757d;
+            white-space: pre-line;
+            transition: all 0.3s ease;
+        }
+
+        .inline-specs:hover {
+            background: #e9ecef;
+            border-left-color: #3498db;
         }
 
         .continue-btn {
@@ -476,99 +524,9 @@
             border-left: 4px solid #3498db;
         }
 
-        .step-image {
-            max-width: 200px;
-            max-height: 150px;
-            border-radius: 4px;
-            margin: 5px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid #e1e8ed;
-        }
 
-        .step-image:hover {
-            transform: scale(1.05);
-            border-color: #3498db;
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-        }
 
-        .step-image-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            cursor: pointer;
-        }
 
-        .step-image-modal img {
-            max-width: 90vw;
-            max-height: 90vh;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .inline-step-image-indicator {
-            display: inline-block;
-            background: #3498db;
-            color: white;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            font-size: 10px;
-            text-align: center;
-            line-height: 16px;
-            margin-left: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .inline-step-image-indicator:hover {
-            background: #2980b9;
-            transform: scale(1.2);
-        }
-
-        .inline-step-image-indicator:hover::after {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-bottom: 5px solid #2980b9;
-        }
-
-        .inline-step-thumbnail {
-            position: absolute;
-            top: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            border: 2px solid #3498db;
-            border-radius: 8px;
-            padding: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            max-width: 200px;
-            max-height: 150px;
-            display: none;
-        }
-
-        .inline-step-thumbnail img {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: 4px;
-            display: block;
-        }
 
         .test-result {
             margin-top: 15px;
@@ -579,6 +537,54 @@
             color: #34495e;
             white-space: pre-wrap;
             word-wrap: break-word;
+        }
+
+        .test-specifications {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .specs-list {
+            margin-top: 8px;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            margin: 4px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .spec-item:hover {
+            background: rgba(52, 152, 219, 0.1);
+            border-color: #3498db;
+        }
+
+        .spec-item.spec-ok {
+            background: rgba(39, 174, 96, 0.1);
+            border-color: #27ae60;
+        }
+
+        .spec-item.spec-ko {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: #e74c3c;
+        }
+
+        .spec-status-icon {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .spec-text {
+            flex: 1;
+            font-size: 14px;
         }
 
         .timer {
@@ -662,13 +668,6 @@
             transform: scale(1.05);
         }
 
-        .step-chevron {
-            font-size: 1,6em;
-            font-weight: bold;
-            margin: 0 5px;
-            display: inline-block;
-            vertical-align: middle;
-        }
 
         .inline-id {
             font-weight: bold;
@@ -765,6 +764,19 @@
             position: relative !important;
             z-index: 10000 !important;
             margin: 0 !important;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
         }
 
         .export-options, .import-options {
@@ -987,6 +999,7 @@
                 <select id="headerTestSuiteSelect" onchange="switchTestSuiteFromHeader()">
                     <option value="">Tous les jeux de test</option>
                 </select>
+                <button onclick="createNewTestSuite()" class="btn-add-suite" title="Créer un nouveau jeu de test">➕</button>
                 <button onclick="showTestSuiteStats()">📊 Stats</button>
             </div>
             <h1>🧪 Test Case Tracker</h1>
@@ -994,65 +1007,6 @@
         </div>
         
         <div class="main-content">
-            <div class="input-section">
-                <h2>Nouveau Cas de Test</h2>
-                
-                <div class="input-group">
-                    <label for="testSuiteSelect">Jeu de test :</label>
-                    <select id="testSuiteSelect" onchange="switchTestSuite()">
-                        <option value="">Sélectionner un jeu de test...</option>
-                    </select>
-                    <input type="text" id="testSuiteInput" placeholder="Nouveau jeu (ex: HTTP, MQTT, Conf Simple)" style="margin-top: 10px;">
-                    <button class="btn" onclick="createTestSuite()" style="margin-top: 5px;">Créer Jeu de Test</button>
-                </div>
-
-                <div class="input-group">
-                    <label for="testTitleInput">Titre du cas de test :</label>
-                    <input type="text" id="testTitleInput" placeholder="Ex: Test de connexion HTTP">
-                </div>
-
-                
-                <div id="currentSteps" style="margin: 15px 0;"></div>
-
-
-                <div class="input-group">
-                    <label for="stepInput">Étape du test :</label>
-                    <input type="text" id="stepInput" placeholder="Ex: Ouverture de conf">
-                    <div style="display: flex; gap: 8px; margin-top: 10px;">
-                        <button class="btn btn-small" onclick="addStep()">Ajouter Étape</button>
-                        <button class="btn btn-small" onclick="document.getElementById('stepImageInput').click()" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">📷 Charger Image</button>
-                        <button class="btn btn-small" onclick="pasteFromClipboard()" style="background: linear-gradient(135deg, #e67e22, #d35400);">📋 Coller Screenshot</button>
-                        <input type="file" id="stepImageInput" accept="image/*" style="display: none;" onchange="addStepWithImage()">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="resultInput">Résultat observé :</label>
-                    <textarea id="resultInput" placeholder="Ex: OK le résumé affiche bien la modif"></textarea>
-                </div>
-
-                <div class="input-group">
-                    <label for="statusSelect">Statut :</label>
-                    <select id="statusSelect">
-                        <option value="todo">📋 À faire</option>
-                        <option value="pending">⏳ En cours</option>
-                        <option value="ok">✅ OK</option>
-                        <option value="ko">❌ KO</option>
-                    </select>
-                </div>
-
-                <button class="btn btn-success" onclick="saveTestCase()">Sauvegarder le Cas de Test</button>
-                <button class="btn" onclick="clearCurrentTest()">Effacer</button>
-
-                <div class="saved-steps">
-                    <h3>Étapes sauvegardées :</h3>
-                    <p style="font-size: 11px; color: #7f8c8d; margin-bottom: 10px;">
-                        Cliquez sur une étape pour la mettre dans le champ, sur <strong>+</strong> pour l'ajouter directement, ou sur <strong>🗑️</strong> pour la supprimer
-                    </p>
-                    <div id="savedStepsTags"></div>
-                </div>
-            </div>
-
             <div class="test-cases">
                 <h2>Cas de Test Réalisés</h2>
                 
@@ -1065,6 +1019,7 @@
                 <div id="testCasesInline"></div>
                 
                 <div class="controls">
+                    <button class="btn btn-success" onclick="openTestCaseModal()" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">💾 Nouveau Cas de Test</button>
                     <button class="btn btn-export" onclick="showExportOptions()">📄 Exporter les Résultats</button>
                     <button class="btn btn-import" onclick="importFromJSON()">📥 Importer JSON</button>
                     <button class="btn btn-danger" onclick="clearAllTests()">🗑️ Effacer Tout</button>
@@ -1168,6 +1123,12 @@
             
             if (savedData) {
                 testCases = JSON.parse(savedData);
+                // Rétrocompatibilité : ajouter le champ specifications s'il n'existe pas
+                testCases.forEach(testCase => {
+                    if (!testCase.specifications) {
+                        testCase.specifications = [];
+                    }
+                });
                 testCaseCounter = testCases.length > 0 ? Math.max(...testCases.map(tc => tc.id)) + 1 : 1;
             }
             
@@ -1185,6 +1146,8 @@
             
             if (savedLastUsedSuite) {
                 lastUsedTestSuite = savedLastUsedSuite;
+                // Restaurer automatiquement le dernier jeu sélectionné
+                filteredTestSuite = savedLastUsedSuite;
             }
             
             updateTestSuiteSelectors();
@@ -1206,21 +1169,7 @@
 
         // Gestion des jeux de test
         function updateTestSuiteSelectors() {
-            const mainSelector = document.getElementById('testSuiteSelect');
             const headerSelector = document.getElementById('headerTestSuiteSelect');
-            
-            if (mainSelector) {
-                // Si aucun jeu n'est sélectionné et qu'on a un dernier jeu utilisé, l'utiliser
-                if (!currentTestSuite && lastUsedTestSuite) {
-                    currentTestSuite = lastUsedTestSuite;
-                }
-                
-                mainSelector.innerHTML = '<option value="">Sélectionner un jeu de test...</option>' + 
-                    testSuites.map(suite => {
-                        const suiteName = typeof suite === 'string' ? suite : suite.name;
-                        return `<option value="${suiteName}" ${suiteName === currentTestSuite ? 'selected' : ''}>${suiteName}</option>`;
-                    }).join('');
-            }
             
             if (headerSelector) {
                 headerSelector.innerHTML = '<option value="">Tous les jeux de test</option>' + 
@@ -1231,19 +1180,31 @@
             }
         }
 
-        function createTestSuite() {
-            const input = document.getElementById('testSuiteInput');
-            const suiteName = input.value.trim();
+
+
+        function switchTestSuiteFromHeader() {
+            filteredTestSuite = document.getElementById('headerTestSuiteSelect').value;
+            // Mémoriser le dernier jeu sélectionné
+            if (filteredTestSuite) {
+                lastUsedTestSuite = filteredTestSuite;
+                saveData();
+            }
+            updateDisplay();
+        }
+
+        function createNewTestSuite() {
+            const suiteName = prompt('Entrez le nom du nouveau jeu de test :');
             
-            if (!suiteName) {
-                alert('Entrez un nom pour le jeu de test !');
+            if (!suiteName || !suiteName.trim()) {
                 return;
             }
             
-            // Vérifier si le jeu de test existe déjà (compatible avec les deux formats)
+            const trimmedName = suiteName.trim();
+            
+            // Vérifier si le jeu de test existe déjà
             const exists = testSuites.some(suite => {
                 const name = typeof suite === 'string' ? suite : suite.name;
-                return name === suiteName;
+                return name === trimmedName;
             });
             
             if (exists) {
@@ -1251,26 +1212,20 @@
                 return;
             }
             
-            testSuites.push({ name: suiteName });
-            currentTestSuite = suiteName;
-            lastUsedTestSuite = suiteName;
-            input.value = '';
+            // Créer le nouveau jeu de test
+            testSuites.push({ name: trimmedName });
             
+            // Sélectionner automatiquement le nouveau jeu
+            filteredTestSuite = trimmedName;
+            lastUsedTestSuite = trimmedName;
+            
+            // Mettre à jour l'interface
             updateTestSuiteSelectors();
-            saveData();
-        }
-
-        function switchTestSuite() {
-            currentTestSuite = document.getElementById('testSuiteSelect').value;
-            if (currentTestSuite) {
-                lastUsedTestSuite = currentTestSuite;
-                saveData();
-            }
-        }
-
-        function switchTestSuiteFromHeader() {
-            filteredTestSuite = document.getElementById('headerTestSuiteSelect').value;
             updateDisplay();
+            saveData();
+            
+            // Message de confirmation
+            alert(`Jeu de test "${trimmedName}" créé et sélectionné !`);
         }
 
         function getFilteredTestCases() {
@@ -1313,374 +1268,22 @@
         }
 
         // Ajouter une étape
-        function addStep() {
-            const stepInput = document.getElementById('stepInput');
-            const step = stepInput.value.trim();
-            
-            if (step) {
-                currentSteps.push(step);
-                savedSteps.add(step);
-                stepInput.value = '';
-                
-                if (!currentTestStartTime) {
-                    currentTestStartTime = new Date();
-                }
-                
-                updateCurrentStepsDisplay();
-                updateSavedStepsDisplay();
-                saveData();
-            }
-        }
 
-        // Ajouter une étape avec image
-        function addStepWithImage() {
-            const fileInput = document.getElementById('stepImageInput');
-            const file = fileInput.files[0];
-            
-            if (!file) return;
-            
-            // Vérifier que c'est bien une image
-            if (!file.type.startsWith('image/')) {
-                alert('Veuillez sélectionner un fichier image valide.');
-                return;
-            }
-            
-            // Vérifier la taille (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('L\'image est trop volumineuse. Taille maximum : 5MB');
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const stepInput = document.getElementById('stepInput');
-                const step = stepInput.value.trim() || 'Screenshot ajouté';
-                
-                // Ajouter l'étape
-                currentSteps.push(step);
-                savedSteps.add(step);
-                
-                // Stocker l'image
-                const stepKey = `current-${currentSteps.length - 1}`;
-                stepImages[stepKey] = e.target.result;
-                
-                stepInput.value = '';
-                fileInput.value = '';
-                
-                if (!currentTestStartTime) {
-                    currentTestStartTime = new Date();
-                }
-                
-                updateCurrentStepsDisplay();
-                updateSavedStepsDisplay();
-                saveData();
-            };
-            
-            reader.readAsDataURL(file);
-        }
 
         // Coller une image depuis le presse-papier
-        async function pasteFromClipboard() {
-            try {
-                // Vérifier si l'API Clipboard est disponible
-                if (!navigator.clipboard || !navigator.clipboard.read) {
-                    alert('Le collage depuis le presse-papier n\'est pas supporté par votre navigateur. Utilisez le bouton "Screenshot" à la place.');
-                    return;
-                }
-
-                // Lire le contenu du presse-papier
-                const clipboardItems = await navigator.clipboard.read();
-                
-                // Chercher une image dans le presse-papier
-                for (const clipboardItem of clipboardItems) {
-                    for (const type of clipboardItem.types) {
-                        if (type.startsWith('image/')) {
-                            const blob = await clipboardItem.getType(type);
-                            
-                            // Vérifier la taille (max 5MB)
-                            if (blob.size > 5 * 1024 * 1024) {
-                                alert('L\'image dans le presse-papier est trop volumineuse. Taille maximum : 5MB');
-                                return;
-                            }
-                            
-                            // Convertir en base64
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                const stepInput = document.getElementById('stepInput');
-                                const step = stepInput.value.trim() || 'Screenshot collé';
-                                
-                                // Ajouter l'étape
-                                currentSteps.push(step);
-                                savedSteps.add(step);
-                                
-                                // Stocker l'image
-                                const stepKey = `current-${currentSteps.length - 1}`;
-                                stepImages[stepKey] = e.target.result;
-                                
-                                stepInput.value = '';
-                                
-                                if (!currentTestStartTime) {
-                                    currentTestStartTime = new Date();
-                                }
-                                
-                                updateCurrentStepsDisplay();
-                                updateSavedStepsDisplay();
-                                saveData();
-                            };
-                            
-                            reader.readAsDataURL(blob);
-                            return;
-                        }
-                    }
-                }
-                
-                alert('Aucune image trouvée dans le presse-papier. Faites d\'abord un screenshot (Win+Shift+S ou Cmd+Shift+4) puis réessayez.');
-                
-            } catch (error) {
-                console.error('Erreur lors du collage:', error);
-                
-                // Messages d'erreur plus spécifiques
-                if (error.name === 'NotAllowedError') {
-                    alert('Permission refusée pour accéder au presse-papier. Vérifiez les permissions de votre navigateur.');
-                } else if (error.name === 'NotFoundError') {
-                    alert('Aucune image trouvée dans le presse-papier. Faites d\'abord un screenshot (Win+Shift+S) puis réessayez.');
-                } else {
-                    alert('Erreur lors du collage depuis le presse-papier. Assurez-vous d\'avoir fait un screenshot récemment et que votre navigateur supporte cette fonctionnalité.');
-                }
-            }
-        }
-
-        // Afficher les étapes courantes
-        function updateCurrentStepsDisplay() {
-            const container = document.getElementById('currentSteps');
-            container.innerHTML = currentSteps.map((step, index) => {
-                const stepKey = `current-${index}`;
-                const image = stepImages[stepKey];
-                const imageHtml = image ? `<img src="${image}" class="step-image" onclick="showImageModal('${image}')" title="Cliquer pour agrandir">` : '';
-                
-                return `<div class="test-step">
-                    <span class="current-step-editable" onclick="editCurrentStep(${index})" title="Cliquer pour modifier cette étape">${index + 1}. ${step}</span>
-                    ${imageHtml}
-                    <button style="float: right; background: none; border: none; color: #e74c3c; cursor: pointer;" onclick="removeCurrentStep(${index})">✕</button>
-                </div>`;
-            }).join('');
-        }
-
-        // Supprimer une étape courante
-        function removeCurrentStep(index) {
-            // Supprimer l'image associée si elle existe
-            const stepKey = `current-${index}`;
-            if (stepImages[stepKey]) {
-                delete stepImages[stepKey];
-            }
-            
-            currentSteps.splice(index, 1);
-            
-            // Réorganiser les clés d'images pour les étapes suivantes
-            const newStepImages = {};
-            Object.keys(stepImages).forEach(key => {
-                if (key.startsWith('current-')) {
-                    const keyIndex = parseInt(key.split('-')[1]);
-                    if (keyIndex > index) {
-                        newStepImages[`current-${keyIndex - 1}`] = stepImages[key];
-                    } else if (keyIndex < index) {
-                        newStepImages[key] = stepImages[key];
-                    }
-                } else {
-                    newStepImages[key] = stepImages[key];
-                }
-            });
-            stepImages = newStepImages;
-            
-            updateCurrentStepsDisplay();
-            saveData();
-        }
-
-        // Afficher l'image en modal
-        function showImageModal(imageSrc) {
-            const modal = document.createElement('div');
-            modal.className = 'step-image-modal';
-            modal.onclick = () => modal.remove();
-            modal.innerHTML = `<img src="${imageSrc}" alt="Screenshot">`;
-            document.body.appendChild(modal);
-        }
-
-        // Afficher la miniature au survol
-        function showInlineThumbnail(event, imageSrc) {
-            // Supprimer toute miniature existante
-            hideInlineThumbnail();
-            
-            const indicator = event.target;
-            const thumbnail = document.createElement('div');
-            thumbnail.className = 'inline-step-thumbnail';
-            thumbnail.innerHTML = `<img src="${imageSrc}" alt="Miniature">`;
-            
-            // Positionner la miniature
-            const rect = indicator.getBoundingClientRect();
-            thumbnail.style.position = 'fixed';
-            thumbnail.style.top = (rect.bottom + 5) + 'px';
-            thumbnail.style.left = (rect.left + rect.width / 2) + 'px';
-            thumbnail.style.transform = 'translateX(-50%)';
-            thumbnail.style.display = 'block';
-            
-            document.body.appendChild(thumbnail);
-            
-            // Supprimer la miniature si on quitte l'indicateur
-            indicator.addEventListener('mouseleave', hideInlineThumbnail, { once: true });
-        }
-
-        // Masquer la miniature
-        function hideInlineThumbnail() {
-            const existingThumbnail = document.querySelector('.inline-step-thumbnail');
-            if (existingThumbnail) {
-                existingThumbnail.remove();
-            }
-        }
-
-        // Éditer une étape courante
-        function editCurrentStep(index) {
-            const currentStep = currentSteps[index];
-            if (!currentStep) return;
-
-            const element = event.target;
-            const stepContainer = element.closest('.test-step');
-            
-            // Créer un input temporaire (une seule ligne)
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentStep;
-            input.className = 'editing-input';
-            input.style.width = Math.max(200, currentStep.length * 8) + 'px';
-            
-            // Remplacer temporairement l'élément
-            const editableSpan = stepContainer.querySelector('.current-step-editable');
-            editableSpan.parentNode.replaceChild(input, editableSpan);
-            input.focus();
-            input.select();
-            
-            function saveStep() {
-                const newStep = input.value.trim();
-                if (newStep && newStep !== currentStep) {
-                    currentSteps[index] = newStep;
-                    // Mettre à jour aussi dans les étapes sauvegardées
-                    savedSteps.delete(currentStep);
-                    savedSteps.add(newStep);
-                    updateSavedStepsDisplay();
-                    saveData();
-                }
-                updateCurrentStepsDisplay();
-            }
-            
-            function cancelEdit() {
-                updateCurrentStepsDisplay();
-            }
-            
-            input.addEventListener('blur', saveStep);
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    saveStep();
-                } else if (e.key === 'Escape') {
-                    cancelEdit();
-                }
-            });
-        }
 
 
 
 
-        // Afficher les étapes sauvegardées
-        function updateSavedStepsDisplay() {
-            const container = document.getElementById('savedStepsTags');
-            container.innerHTML = [...savedSteps].map(step => 
-                `<span class="step-tag">
-                    <span class="step-text" onclick="reuseStep('${step.replace(/'/g, "\\'")}')" title="Cliquer pour remplir la zone de texte">${step}</span>
-                    <span class="step-add-btn" onclick="addStepDirectly('${step.replace(/'/g, "\\'")}')" title="Ajouter directement cette étape">➕</span>
-                    <span class="step-delete-btn" onclick="deleteSavedStep('${step.replace(/'/g, "\\'")}')" title="Supprimer cette étape">🗑️</span>
-                </span>`
-            ).join('');
-        }
 
-        // Réutiliser une étape (remplir la zone de texte)
-        function reuseStep(step) {
-            document.getElementById('stepInput').value = step;
-        }
 
-        // Ajouter directement une étape
-        function addStepDirectly(step) {
-            if (step.trim()) {
-                currentSteps.push(step);
-                if (currentSteps.length === 1) {
-                    currentTestStartTime = new Date();
-                }
-                updateCurrentStepsDisplay();
-                document.getElementById('stepInput').value = '';
-            }
-        }
 
-        // Sauvegarder le cas de test
-        function saveTestCase() {
-            if (currentSteps.length === 0) {
-                alert('Ajoutez au moins une étape avant de sauvegarder !');
-                return;
-            }
 
-            if (!currentTestSuite) {
-                alert('Sélectionnez ou créez un jeu de test avant de sauvegarder !');
-                return;
-            }
 
-            const title = document.getElementById('testTitleInput').value.trim();
-            const result = document.getElementById('resultInput').value.trim();
-            const status = document.getElementById('statusSelect').value;
-            
-            const duration = currentTestStartTime ? 
-                Math.round((new Date() - currentTestStartTime) / 1000) : 0;
 
-            const testCase = {
-                id: testCaseCounter++,
-                title: title || `Test Case #${testCaseCounter - 1}`,
-                steps: [...currentSteps],
-                result: result,
-                status: status,
-                timestamp: new Date().toISOString(),
-                duration: duration,
-                testSuite: currentTestSuite
-            };
 
-            // Transférer les images des étapes courantes vers les étapes sauvegardées
-            currentSteps.forEach((step, index) => {
-                const currentKey = `current-${index}`;
-                const savedKey = `${testCase.id}-${index}`;
-                if (stepImages[currentKey]) {
-                    stepImages[savedKey] = stepImages[currentKey];
-                    delete stepImages[currentKey];
-                }
-            });
 
-            testCases.unshift(testCase);
-            clearCurrentTest();
-            updateDisplay();
-            saveData();
-        }
 
-        // Effacer le test courant
-        function clearCurrentTest() {
-            currentSteps = [];
-            currentTestStartTime = null;
-            document.getElementById('testTitleInput').value = '';
-            document.getElementById('resultInput').value = '';
-            document.getElementById('statusSelect').value = 'todo';
-            // Ne pas réinitialiser currentTestSuite pour garder le dernier jeu utilisé
-            updateCurrentStepsDisplay();
-        }
-
-        function deleteSavedStep(step) {
-            if (confirm(`Êtes-vous sûr de vouloir supprimer l'étape "${step}" ?`)) {
-                savedSteps.delete(step);
-                updateSavedStepsDisplay();
-                saveData();
-            }
-        }
 
         function renameTestSuite() {
             const currentSuite = document.getElementById('headerTestSuiteSelect').value;
@@ -1918,7 +1521,6 @@
 
         // Mettre à jour l'affichage
         function updateDisplay() {
-            updateSavedStepsDisplay();
             updateTestCasesDisplay();
         }
 
@@ -1957,7 +1559,10 @@
                                 <span class="test-title-editable" onclick="editTestCaseTitle(${testCase.id})" title="Cliquer pour modifier le titre">${testCase.title || `Test Case #${testCase.id}`}</span>
                                 <span style="color: #7f8c8d; font-size: 0.9em;"> - ${testCase.testSuite || 'Sans jeu'}</span>
                             </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <button class="btn btn-small" onclick="editTestCase(${testCase.id})" style="background: linear-gradient(135deg, #3498db, #2980b9); font-size: 12px; padding: 4px 8px;">✏️ Éditer</button>
                             <div class="status ${statusClass}" onclick="toggleStatus(${testCase.id})" title="Cliquer pour changer le statut">${statusText}</div>
+                            </div>
                         </div>
                         
                         <div class="test-steps">
@@ -1974,6 +1579,29 @@
                         </div>
                         
                         ${testCase.result ? `<div class="test-result test-result-editable" onclick="editResult(${testCase.id})" title="Cliquer pour modifier le résultat"><strong>Résultat :</strong> ${testCase.result}</div>` : ''}
+                        
+                        <div class="test-specifications">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <strong>Spécifications vérifiées :</strong>
+                                <button class="btn btn-small" onclick="editAllSpecifications(${testCase.id})" style="background: linear-gradient(135deg, #3498db, #2980b9); font-size: 12px; padding: 4px 8px;">
+                                    ✏️ Éditer
+                                </button>
+                            </div>
+                            ${testCase.specifications && testCase.specifications.length > 0 ? `
+                                <div class="specs-list">
+                                    ${testCase.specifications.map(spec => `
+                                        <div class="spec-item spec-${spec.status}" onclick="editSpecification(${testCase.id}, '${spec.text.replace(/'/g, "\\'")}')" title="Cliquer pour modifier cette spécification">
+                                            <span class="spec-status-icon">${spec.status === 'ok' ? '✅' : '❌'}</span>
+                                            <span class="spec-text">${spec.text}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : `
+                                <div style="color: #7f8c8d; font-style: italic; padding: 8px;">
+                                    Aucune spécification définie
+                                </div>
+                            `}
+                        </div>
                         
                         <div class="timer">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -2049,15 +1677,18 @@
                             `<span class="inline-step-image-indicator" 
                                    onclick="event.stopPropagation(); showImageModal('${image}')" 
                                    title="Cliquer pour voir l'image complète"
-                                   onmouseenter="showInlineThumbnail(event, '${image}')"
+                                   onmouseenter="showInlineThumbnail(event, '${image}')" 
                                    onmouseleave="hideInlineThumbnail(event)">📷</span>` : '';
-                        
+
                         return `<span class="inline-step" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">
                             ${step}${imageIndicator}
                         </span>`;
-                    }).join('<span class="step-chevron">˃</span>');
+                    }).join(' ˃ ');
 
                     const resultSummary = testCase.result || 'Pas de résultat spécifié';
+                    const specsSummary = testCase.specifications && testCase.specifications.length > 0 
+                        ? testCase.specifications.map(spec => `${spec.status === 'ok' ? '✅' : '❌'} ${spec.text}`).join('<br>')
+                        : '';
 
                     html += `
                         <div class="inline-test status-${testCase.status} fade-in">
@@ -2070,8 +1701,13 @@
                                 <div class="inline-result" onclick="editResult(${testCase.id})" title="Cliquer pour modifier">
                                     <strong>Résultat:</strong> <br> ${resultSummary}
                                 </div>
+                                <div class="inline-specs" onclick="editAllSpecifications(${testCase.id})" title="Cliquer pour éditer les spécifications" style="cursor: pointer;">
+                                    <strong>Spécifications:</strong> <br> 
+                                    ${specsSummary || '<span style="color: #7f8c8d; font-style: italic;">Aucune spécification définie</span>'}
+                                </div>
                             </div>
                             <div class="inline-actions">
+                                <button class="edit-btn" onclick="editTestCase(${testCase.id})" title="Éditer ce test" style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; padding: 4px 8px; border-radius: 4px; margin-right: 4px;">✏️</button>
                                 <button class="continue-btn" onclick="continueTestCase(${testCase.id})" title="Continuer ce test">🔄</button>
                                 <button onclick="deleteTestCase(${testCase.id})" title="Supprimer">🗑️</button>
                             </div>
@@ -2133,6 +1769,905 @@
             });
         }
 
+        // Éditer une spécification
+        function editSpecification(testId, specText) {
+            const testCase = testCases.find(tc => tc.id === testId);
+            if (!testCase || !testCase.specifications) return;
+            
+            const specIndex = testCase.specifications.findIndex(spec => spec.text === specText);
+            if (specIndex === -1) return;
+            
+            const spec = testCase.specifications[specIndex];
+            const specElement = event.target.closest('.spec-item');
+            
+            // Créer un conteneur d'édition
+            const editContainer = document.createElement('div');
+            editContainer.className = 'spec-edit-container';
+            editContainer.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px;
+                background: white;
+                border: 2px solid #3498db;
+                border-radius: 6px;
+                margin: 4px 0;
+            `;
+            
+            const textInput = document.createElement('input');
+            textInput.type = 'text';
+            textInput.value = spec.text;
+            textInput.style.cssText = 'flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 4px;';
+            
+            const statusSelect = document.createElement('select');
+            statusSelect.style.cssText = 'padding: 6px; border: 1px solid #ddd; border-radius: 4px;';
+            statusSelect.innerHTML = `
+                <option value="ok" ${spec.status === 'ok' ? 'selected' : ''}>✅ OK</option>
+                <option value="ko" ${spec.status === 'ko' ? 'selected' : ''}>❌ KO</option>
+            `;
+            
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '💾';
+            saveBtn.style.cssText = 'padding: 6px 8px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer;';
+            
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = '❌';
+            cancelBtn.style.cssText = 'padding: 6px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;';
+            
+            editContainer.appendChild(textInput);
+            editContainer.appendChild(statusSelect);
+            editContainer.appendChild(saveBtn);
+            editContainer.appendChild(cancelBtn);
+            
+            // Remplacer l'élément
+            specElement.parentNode.replaceChild(editContainer, specElement);
+            textInput.focus();
+            textInput.select();
+            
+            function saveSpecification() {
+                const newText = textInput.value.trim();
+                const newStatus = statusSelect.value;
+                
+                if (newText) {
+                    testCase.specifications[specIndex] = {
+                        text: newText,
+                        status: newStatus
+                    };
+                } else {
+                    // Supprimer la spécification si le texte est vide
+                    testCase.specifications.splice(specIndex, 1);
+                }
+                
+                testCase.lastModified = new Date().toISOString();
+                saveData();
+                updateDisplay();
+            }
+            
+            function cancelEdit() {
+                updateDisplay();
+            }
+            
+            saveBtn.addEventListener('click', saveSpecification);
+            cancelBtn.addEventListener('click', cancelEdit);
+            
+            textInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    saveSpecification();
+                } else if (e.key === 'Escape') {
+                    cancelEdit();
+                }
+            });
+        }
+
+        // Éditer toutes les spécifications d'un cas de test
+        function editAllSpecifications(testId) {
+            const testCase = testCases.find(tc => tc.id === testId);
+            if (!testCase) return;
+            
+            // Créer un modal pour l'édition des spécifications
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                max-width: 600px;
+                width: 90%;
+                max-height: 80vh;
+                overflow-y: auto;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            `;
+            
+            modalContent.innerHTML = `
+                <h3 style="margin-top: 0; color: #2c3e50;">Éditer les spécifications</h3>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">Modifiez les spécifications vérifiées pour ce cas de test</p>
+                <div id="modalSpecificationsContainer"></div>
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button id="addSpecBtn" class="btn btn-small" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">➕ Ajouter</button>
+                    <button id="saveSpecsBtn" class="btn btn-success">💾 Sauvegarder</button>
+                    <button id="cancelSpecsBtn" class="btn" style="background: #95a5a6;">❌ Annuler</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            const container = modalContent.querySelector('#modalSpecificationsContainer');
+            
+            // Fonction pour créer un groupe de spécification
+            function createSpecGroup(spec = null) {
+                const specGroup = document.createElement('div');
+                specGroup.className = 'spec-input-group';
+                specGroup.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 8px;
+                    padding: 8px;
+                    background: #f8f9fa;
+                    border-radius: 6px;
+                    border: 1px solid #e9ecef;
+                `;
+                
+                specGroup.innerHTML = `
+                    <input type="text" class="spec-text" value="${spec ? spec.text : ''}" placeholder="Ex: Connection Active" style="flex: 1; margin-right: 8px; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
+                    <select class="spec-status" style="width: 80px; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="ok" ${spec && spec.status === 'ok' ? 'selected' : ''}>✅ OK</option>
+                        <option value="ko" ${spec && spec.status === 'ko' ? 'selected' : ''}>❌ KO</option>
+                    </select>
+                    <button type="button" class="btn btn-small" onclick="removeModalSpecification(this)" style="background: linear-gradient(135deg, #e74c3c, #c0392b); margin-left: 8px; padding: 6px 8px;">🗑️</button>
+                `;
+                
+                return specGroup;
+            }
+            
+            // Charger les spécifications existantes
+            if (testCase.specifications && testCase.specifications.length > 0) {
+                testCase.specifications.forEach(spec => {
+                    container.appendChild(createSpecGroup(spec));
+                });
+            } else {
+                // Ajouter une spécification vide par défaut
+                container.appendChild(createSpecGroup());
+            }
+            
+            // Fonction pour ajouter une nouvelle spécification
+            function addModalSpecification() {
+                container.appendChild(createSpecGroup());
+            }
+            
+            // Fonction pour supprimer une spécification
+            window.removeModalSpecification = function(button) {
+                if (container.children.length > 1) {
+                    button.parentElement.remove();
+                } else {
+                    alert('Au moins une spécification doit être présente. Vous pouvez la vider si nécessaire.');
+                }
+            };
+            
+            // Fonction pour sauvegarder
+            function saveModalSpecifications() {
+                const specs = [];
+                
+                for (let i = 0; i < container.children.length; i++) {
+                    const specGroup = container.children[i];
+                    const textInput = specGroup.querySelector('.spec-text');
+                    const statusSelect = specGroup.querySelector('.spec-status');
+                    
+                    const text = textInput.value.trim();
+                    if (text) {
+                        specs.push({
+                            text: text,
+                            status: statusSelect.value
+                        });
+                    }
+                }
+                
+                testCase.specifications = specs;
+                testCase.lastModified = new Date().toISOString();
+                saveData();
+                updateDisplay();
+                document.body.removeChild(modal);
+            }
+            
+            // Fonction pour annuler
+            function cancelModalSpecifications() {
+                document.body.removeChild(modal);
+            }
+            
+            // Événements
+            modalContent.querySelector('#addSpecBtn').addEventListener('click', addModalSpecification);
+            modalContent.querySelector('#saveSpecsBtn').addEventListener('click', saveModalSpecifications);
+            modalContent.querySelector('#cancelSpecsBtn').addEventListener('click', cancelModalSpecifications);
+            
+            // Fermer avec Échap
+            modal.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    cancelModalSpecifications();
+                }
+            });
+            
+            // Focus sur le premier input
+            const firstInput = container.querySelector('.spec-text');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }
+
+        // Ouvrir la modale pour créer un nouveau cas de test
+        function openTestCaseModal(testId = null) {
+            const isEdit = testId !== null;
+            const testCase = isEdit ? testCases.find(tc => tc.id === testId) : null;
+            
+            // Créer un modal pour l'édition/création du cas de test
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                max-width: 800px;
+                width: 95%;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            `;
+            
+            modalContent.innerHTML = `
+                <h3 style="margin-top: 0; color: #2c3e50;">${isEdit ? 'Éditer le Cas de Test' : 'Nouveau Cas de Test'}</h3>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">${isEdit ? 'Modifiez les informations de ce cas de test' : 'Créez un nouveau cas de test avec toutes ses informations'}</p>
+                
+                <div class="modal-form">
+                    <div class="input-group">
+                        <label for="modalTestTitle">Titre du cas de test :</label>
+                        <input type="text" id="modalTestTitle" placeholder="Ex: Test de connexion MQTT" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="modalTestSuite">Jeu de test :</label>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <select id="modalTestSuite" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="">Sélectionner un jeu de test...</option>
+                            </select>
+                            <button type="button" id="addNewTestSuiteBtn" class="btn btn-small" style="background: linear-gradient(135deg, #27ae60, #2ecc71); padding: 8px 12px; flex: 0 0 auto;" title="Créer un nouveau jeu de test">➕</button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Étapes du test :</label>
+                        <div id="modalStepsContainer"></div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+                            <input type="text" id="modalNewStepText" placeholder="Nouvelle étape..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <button type="button" id="addNewStepBtn" class="btn btn-small" style="background: linear-gradient(135deg, #3498db, #2980b9); padding: 8px 12px;">➕</button>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <button type="button" id="addImageBtn" class="btn btn-small" style="background: linear-gradient(135deg, #9b59b6, #8e44ad); padding: 8px 12px;">📷 Charger Image</button>
+                            <button type="button" id="pasteImageBtn" class="btn btn-small" style="background: linear-gradient(135deg, #e67e22, #d35400); padding: 8px 12px;">📋 Coller Screenshot</button>
+                            <input type="file" id="modalStepImageInput" accept="image/*" style="display: none;" onchange="addStepWithImage()">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="modalResult">Résultat observé :</label>
+                        <textarea id="modalResult" placeholder="Ex: OK le résumé affiche bien la modif" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; min-height: 80px; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Spécifications vérifiées :</label>
+                        <div id="modalSpecsContainer"></div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+                            <input type="text" id="modalNewSpecText" placeholder="Nouvelle spécification..." style="flex: 2; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <label style="display: flex; align-items: center; gap: 4px; flex: 0 0 auto; cursor: pointer;">
+                                <input type="checkbox" id="modalNewSpecStatus" checked style="transform: scale(1.2);">
+                                <span>✅ OK</span>
+                            </label>
+                            <button type="button" id="addNewSpecBtn" class="btn btn-small" style="background: linear-gradient(135deg, #27ae60, #2ecc71); padding: 8px 12px; flex: 0 0 auto;">➕</button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="modalStatus">Statut :</label>
+                        <select id="modalStatus" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="todo">📋 À faire</option>
+                            <option value="pending">⏳ En cours</option>
+                            <option value="ok">✅ OK</option>
+                            <option value="ko">❌ KO</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button id="saveTestCaseBtn" class="btn btn-success">💾 ${isEdit ? 'Mettre à jour' : 'Créer'}</button>
+                    <button id="cancelTestCaseBtn" class="btn" style="background: #95a5a6;">❌ Annuler</button>
+                </div>
+            `;
+            
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Remplir les sélecteurs de jeux de test
+            const testSuiteSelect = modalContent.querySelector('#modalTestSuite');
+            testSuites.forEach(suite => {
+                const option = document.createElement('option');
+                option.value = suite.name;
+                option.textContent = suite.name;
+                testSuiteSelect.appendChild(option);
+            });
+            
+            // Si c'est une création (pas une édition), sélectionner automatiquement le dernier jeu utilisé
+            if (!isEdit && lastUsedTestSuite) {
+                testSuiteSelect.value = lastUsedTestSuite;
+            }
+            
+            // Charger les données si c'est une édition
+            if (isEdit && testCase) {
+                modalContent.querySelector('#modalTestTitle').value = testCase.title || '';
+                modalContent.querySelector('#modalTestSuite').value = testCase.testSuite || '';
+                modalContent.querySelector('#modalResult').value = testCase.result || '';
+                modalContent.querySelector('#modalStatus').value = testCase.status || 'todo';
+                
+                // Charger les étapes
+                const stepsContainer = modalContent.querySelector('#modalStepsContainer');
+                if (testCase.steps && testCase.steps.length > 0) {
+                    testCase.steps.forEach(step => {
+                        addModalStep(step);
+                    });
+                } else {
+                    addModalStep();
+                }
+                
+                // Charger les spécifications
+                const specsContainer = modalContent.querySelector('#modalSpecsContainer');
+                if (testCase.specifications && testCase.specifications.length > 0) {
+                    testCase.specifications.forEach(spec => {
+                        addModalSpecification(spec);
+                    });
+                } else {
+                    addModalSpecification();
+                }
+            } else {
+                // Nouveau cas de test - ajouter des champs vides
+                addModalStep();
+                addModalSpecification();
+            }
+            
+            // Fonctions pour gérer les étapes
+            function addModalStep(stepText = '') {
+                const stepsContainer = modalContent.querySelector('#modalStepsContainer');
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'modal-step-group';
+                stepDiv.style.cssText = `
+                    display: flex;
+                    gap: 8px;
+                    align-items: flex-start;
+                    margin-bottom: 8px;
+                    padding: 8px;
+                    background: #f8f9fa;
+                    border-radius: 6px;
+                    border: 1px solid #e9ecef;
+                `;
+                
+                const stepIndex = stepsContainer.children.length + 1;
+                const stepKey = `modal-${stepIndex}`;
+                
+                // Vérifier s'il y a une image associée à cette étape
+                let imageHtml = '';
+                if (isEdit && testCase) {
+                    const originalStepIndex = testCase.steps.indexOf(stepText);
+                    if (originalStepIndex !== -1) {
+                        const originalStepKey = `${testCase.id}-${originalStepIndex}`;
+                        if (stepImages[originalStepKey]) {
+                            // Copier l'image vers la clé temporaire
+                            stepImages[stepKey] = stepImages[originalStepKey];
+                            imageHtml = `<img src="${stepImages[originalStepKey]}" class="step-image" onclick="showImageModal('${stepImages[originalStepKey]}')" title="Cliquer pour agrandir">`;
+                        }
+                    }
+                }
+                
+                stepDiv.innerHTML = `
+                    <div style="flex: 1;">
+                        <input type="text" class="modal-step-text" value="${stepText}" placeholder="Étape du test..." style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 4px;">
+                        ${imageHtml}
+                    </div>
+                    <button type="button" onclick="removeModalStep(this)" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 4px;">✕</button>
+                `;
+                
+                stepsContainer.appendChild(stepDiv);
+            }
+            
+            // Fonctions pour gérer les spécifications
+            function addModalSpecification(spec = null) {
+                const specsContainer = modalContent.querySelector('#modalSpecsContainer');
+                const specDiv = document.createElement('div');
+                specDiv.className = 'modal-spec-group';
+                specDiv.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 8px;
+                    padding: 8px;
+                    background: #f8f9fa;
+                    border-radius: 6px;
+                    border: 1px solid #e9ecef;
+                `;
+
+            }
+            
+            // Fonctions globales pour les boutons
+            window.removeModalStep = function(button) {
+                const stepsContainer = modalContent.querySelector('#modalStepsContainer');
+                if (stepsContainer.children.length > 1) {
+                    button.parentElement.remove();
+                } else {
+                    alert('Au moins une étape doit être présente.');
+                }
+            };
+            
+            window.removeModalSpec = function(button) {
+                const specsContainer = modalContent.querySelector('#modalSpecsContainer');
+                if (specsContainer.children.length > 1) {
+                    button.parentElement.remove();
+                } else {
+                    alert('Au moins une spécification doit être présente.');
+                }
+            };
+            
+            // Fonction pour ajouter un nouveau jeu de test
+            function addNewTestSuite() {
+                const suiteName = prompt('Entrez le nom du nouveau jeu de test :');
+                
+                if (!suiteName || !suiteName.trim()) {
+                    return;
+                }
+                
+                const trimmedName = suiteName.trim();
+                
+                // Vérifier si le jeu de test existe déjà
+                const exists = testSuites.some(suite => {
+                    const name = typeof suite === 'string' ? suite : suite.name;
+                    return name === trimmedName;
+                });
+                
+                if (exists) {
+                    alert('Ce jeu de test existe déjà !');
+                    return;
+                }
+                
+                // Créer le nouveau jeu de test
+                testSuites.push({ name: trimmedName });
+                
+                // Ajouter l'option au sélecteur
+                const testSuiteSelect = modalContent.querySelector('#modalTestSuite');
+                const option = document.createElement('option');
+                option.value = trimmedName;
+                option.textContent = trimmedName;
+                testSuiteSelect.appendChild(option);
+                
+                // Sélectionner le nouveau jeu
+                testSuiteSelect.value = trimmedName;
+                
+                // Sauvegarder les données
+                saveData();
+            }
+            
+            // Fonction pour ajouter une nouvelle étape rapidement
+            function addNewStep() {
+                const newStepInput = modalContent.querySelector('#modalNewStepText');
+                const stepText = newStepInput.value.trim();
+                
+                if (!stepText) {
+                    alert('Veuillez entrer une étape !');
+                    return;
+                }
+                
+                // Créer l'élément d'étape
+                const stepGroup = document.createElement('div');
+                stepGroup.className = 'modal-step-group';
+                stepGroup.style.cssText = `
+                    display: flex;
+                    gap: 8px;
+                    align-items: center;
+                    margin-bottom: 8px;
+                    padding: 8px;
+                    background: #f8f9fa;
+                    border-radius: 4px;
+                `;
+                
+                stepGroup.innerHTML = `
+                    <input type="text" class="modal-step-text" value="${stepText}" style="flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
+                    <button type="button" class="btn btn-small" onclick="this.parentElement.remove()" style="background: #e74c3c; color: white; padding: 6px 10px; border: none; border-radius: 4px; cursor: pointer;">🗑️</button>
+                `;
+                
+                // Ajouter à la liste
+                const stepsContainer = modalContent.querySelector('#modalStepsContainer');
+                stepsContainer.appendChild(stepGroup);
+                
+                // Vider le champ de saisie
+                newStepInput.value = '';
+            }
+            
+            // Fonction pour ajouter une étape avec image
+            function addStepWithImage() {
+                const fileInput = modalContent.querySelector('#modalStepImageInput');
+                const file = fileInput.files[0];
+
+                if (!file) return;
+
+                // Vérifier que c'est bien une image
+                if (!file.type.startsWith('image/')) {
+                    alert('Veuillez sélectionner un fichier image valide.');
+                    return;
+                }
+
+                // Vérifier la taille (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('L\'image est trop volumineuse. Taille maximum : 5MB');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newStepInput = modalContent.querySelector('#modalNewStepText');
+                    const stepText = newStepInput.value.trim() || 'Screenshot ajouté';
+
+                    // Créer l'élément d'étape avec image
+                    const stepGroup = document.createElement('div');
+                    stepGroup.className = 'modal-step-group';
+                    stepGroup.style.cssText = `
+                        display: flex;
+                        gap: 8px;
+                        align-items: flex-start;
+                        margin-bottom: 8px;
+                        padding: 8px;
+                        background: #f8f9fa;
+                        border-radius: 4px;
+                        border: 1px solid #e9ecef;
+                    `;
+
+                    const stepIndex = modalContent.querySelectorAll('.modal-step-group').length + 1;
+                    const stepKey = `modal-${stepIndex}`;
+                    
+                    // Stocker l'image temporairement
+                    stepImages[stepKey] = e.target.result;
+
+                    stepGroup.innerHTML = `
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold; margin-bottom: 4px;">${stepIndex}. ${stepText}</div>
+                            <img src="${e.target.result}" class="step-image" onclick="showImageModal('${e.target.result}')" title="Cliquer pour agrandir">
+                        </div>
+                        <button type="button" onclick="removeModalStep(this)" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 4px;">✕</button>
+                    `;
+
+                    // Ajouter à la liste
+                    const stepsContainer = modalContent.querySelector('#modalStepsContainer');
+                    stepsContainer.appendChild(stepGroup);
+
+                    // Vider les champs
+                    newStepInput.value = '';
+                    fileInput.value = '';
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+            // Fonction pour coller une image depuis le presse-papier
+            async function pasteFromClipboard() {
+                try {
+                    // Vérifier si l'API Clipboard est disponible
+                    if (!navigator.clipboard || !navigator.clipboard.read) {
+                        alert('Le collage depuis le presse-papier n\'est pas supporté par votre navigateur. Utilisez le bouton "Charger Image" à la place.');
+                        return;
+                    }
+
+                    // Lire le contenu du presse-papier
+                    const clipboardItems = await navigator.clipboard.read();
+
+                    // Chercher une image dans le presse-papier
+                    for (const clipboardItem of clipboardItems) {
+                        for (const type of clipboardItem.types) {
+                            if (type.startsWith('image/')) {
+                                const blob = await clipboardItem.getType(type);
+
+                                // Vérifier la taille (max 5MB)
+                                if (blob.size > 5 * 1024 * 1024) {
+                                    alert('L\'image dans le presse-papier est trop volumineuse. Taille maximum : 5MB');
+                                    return;
+                                }
+
+                                // Convertir en base64
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    const newStepInput = modalContent.querySelector('#modalNewStepText');
+                                    const stepText = newStepInput.value.trim() || 'Screenshot collé';
+
+                                    // Créer l'élément d'étape avec image
+                                    const stepGroup = document.createElement('div');
+                                    stepGroup.className = 'modal-step-group';
+                                    stepGroup.style.cssText = `
+                                        display: flex;
+                                        gap: 8px;
+                                        align-items: flex-start;
+                                        margin-bottom: 8px;
+                                        padding: 8px;
+                                        background: #f8f9fa;
+                                        border-radius: 4px;
+                                        border: 1px solid #e9ecef;
+                                    `;
+
+                                    const stepIndex = modalContent.querySelectorAll('.modal-step-group').length + 1;
+                                    const stepKey = `modal-${stepIndex}`;
+                                    
+                                    // Stocker l'image temporairement
+                                    stepImages[stepKey] = e.target.result;
+
+                                    stepGroup.innerHTML = `
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: bold; margin-bottom: 4px;">${stepIndex}. ${stepText}</div>
+                                            <img src="${e.target.result}" class="step-image" onclick="showImageModal('${e.target.result}')" title="Cliquer pour agrandir">
+                                        </div>
+                                        <button type="button" onclick="removeModalStep(this)" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 4px;">✕</button>
+                                    `;
+
+                                    // Ajouter à la liste
+                                    const stepsContainer = modalContent.querySelector('#modalStepsContainer');
+                                    stepsContainer.appendChild(stepGroup);
+
+                                    // Vider le champ
+                                    newStepInput.value = '';
+                                };
+
+                                reader.readAsDataURL(blob);
+                                return;
+                            }
+                        }
+                    }
+
+                    alert('Aucune image trouvée dans le presse-papier. Faites d\'abord un screenshot (Win+Shift+S ou Cmd+Shift+4) puis réessayez.');
+
+                } catch (error) {
+                    console.error('Erreur lors du collage:', error);
+
+                    // Messages d'erreur plus spécifiques
+                    if (error.name === 'NotAllowedError') {
+                        alert('Permission refusée pour accéder au presse-papier. Vérifiez les permissions de votre navigateur.');
+                    } else if (error.name === 'NotFoundError') {
+                        alert('Aucune image trouvée dans le presse-papier. Faites d\'abord un screenshot (Win+Shift+S) puis réessayez.');
+                    } else {
+                        alert('Erreur lors du collage depuis le presse-papier. Assurez-vous d\'avoir fait un screenshot récemment et que votre navigateur supporte cette fonctionnalité.');
+                    }
+                }
+            }
+
+            // Fonction pour supprimer une étape du modal
+            function removeModalStep(button) {
+                const stepGroup = button.parentElement;
+                const stepIndex = Array.from(stepGroup.parentElement.children).indexOf(stepGroup);
+                const stepKey = `modal-${stepIndex + 1}`;
+                
+                // Supprimer l'image associée si elle existe
+                if (stepImages[stepKey]) {
+                    delete stepImages[stepKey];
+                }
+                
+                stepGroup.remove();
+                
+                // Réorganiser les numéros d'étapes
+                const remainingSteps = modalContent.querySelectorAll('.modal-step-group');
+                remainingSteps.forEach((step, index) => {
+                    const stepText = step.querySelector('div > div');
+                    if (stepText) {
+                        stepText.textContent = stepText.textContent.replace(/^\d+\./, `${index + 1}.`);
+                    }
+                });
+            }
+            
+            // Fonction pour ajouter une nouvelle spécification rapidement
+            function addNewSpecification() {
+                const newSpecText = modalContent.querySelector('#modalNewSpecText');
+                const newSpecStatus = modalContent.querySelector('#modalNewSpecStatus');
+                const text = newSpecText.value.trim();
+                const status = newSpecStatus.checked ? 'ok' : 'ko';
+                
+                if (!text) {
+                    alert('Veuillez entrer une spécification !');
+                    return;
+                }
+                
+                // Créer l'élément de spécification
+                const specGroup = document.createElement('div');
+                specGroup.className = 'modal-spec-group';
+                specGroup.style.cssText = `
+                    display: flex;
+                    gap: 8px;
+                    align-items: center;
+                    margin-bottom: 8px;
+                    padding: 8px;
+                    background: #f8f9fa;
+                    border-radius: 4px;
+                `;
+                
+                specGroup.innerHTML = `
+                    <input type="text" class="modal-spec-text" value="${text}" style="flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
+                    <label style="display: flex; align-items: center; gap: 4px; flex: 0 0 auto; cursor: pointer;">
+                        <input type="checkbox" class="modal-spec-status" ${status === 'ok' ? 'checked' : ''} style="transform: scale(1.2);">
+                        <span>✅ OK</span>
+                    </label>
+                    <button type="button" class="btn btn-small" onclick="this.parentElement.remove()" style="background: #e74c3c; color: white; padding: 6px 10px; border: none; border-radius: 4px; cursor: pointer;">🗑️</button>
+                `;
+                
+                // Ajouter à la liste
+                const specsContainer = modalContent.querySelector('#modalSpecsContainer');
+                specsContainer.appendChild(specGroup);
+                
+                // Vider les champs de saisie
+                newSpecText.value = '';
+                newSpecStatus.checked = true;
+            }
+            
+            // Événements
+            modalContent.querySelector('#addNewTestSuiteBtn').addEventListener('click', addNewTestSuite);
+            modalContent.querySelector('#addNewStepBtn').addEventListener('click', addNewStep);
+            modalContent.querySelector('#addNewSpecBtn').addEventListener('click', addNewSpecification);
+            modalContent.querySelector('#addImageBtn').addEventListener('click', () => modalContent.querySelector('#modalStepImageInput').click());
+            modalContent.querySelector('#pasteImageBtn').addEventListener('click', pasteFromClipboard);
+            
+            // Support de la touche Enter
+            modalContent.querySelector('#modalNewStepText').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    addNewStep();
+                }
+            });
+            
+            modalContent.querySelector('#modalNewSpecText').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    addNewSpecification();
+                }
+            });
+            
+            // Fonction pour sauvegarder
+            function saveModalTestCase() {
+                const title = modalContent.querySelector('#modalTestTitle').value.trim();
+                const testSuite = modalContent.querySelector('#modalTestSuite').value.trim();
+                const result = modalContent.querySelector('#modalResult').value.trim();
+                const status = modalContent.querySelector('#modalStatus').value;
+                
+                if (!testSuite) {
+                    alert('Veuillez sélectionner un jeu de test !');
+                    return;
+                }
+                
+                // Récupérer les étapes
+                const steps = [];
+                const stepInputs = modalContent.querySelectorAll('.modal-step-text');
+                stepInputs.forEach(input => {
+                    const step = input.value.trim();
+                    if (step) steps.push(step);
+                });
+                
+                if (steps.length === 0) {
+                    alert('Veuillez ajouter au moins une étape !');
+                    return;
+                }
+                
+                // Récupérer les spécifications
+                const specifications = [];
+                const specInputs = modalContent.querySelectorAll('.modal-spec-text');
+                const specStatuses = modalContent.querySelectorAll('.modal-spec-status');
+                
+                for (let i = 0; i < specInputs.length; i++) {
+                    const text = specInputs[i].value.trim();
+                    const status = specStatuses[i].checked ? 'ok' : 'ko';
+                    if (text) {
+                        specifications.push({ text, status });
+                    }
+                }
+                
+                if (isEdit && testCase) {
+                    // Mise à jour du cas de test existant
+                    testCase.title = title || `Test Case #${testCase.id}`;
+                    testCase.testSuite = testSuite;
+                    testCase.steps = steps;
+                    testCase.result = result;
+                    testCase.specifications = specifications;
+                    testCase.status = status;
+                    testCase.lastModified = new Date().toISOString();
+                    
+                    // Transférer les images des étapes temporaires vers les étapes sauvegardées
+                    steps.forEach((step, index) => {
+                        const tempKey = `modal-${index + 1}`;
+                        const savedKey = `${testCase.id}-${index}`;
+                        if (stepImages[tempKey]) {
+                            stepImages[savedKey] = stepImages[tempKey];
+                            delete stepImages[tempKey];
+                        }
+                    });
+                } else {
+                    // Création d'un nouveau cas de test
+                    const newTestCase = {
+                        id: testCaseCounter++,
+                        title: title || `Test Case #${testCaseCounter - 1}`,
+                        testSuite: testSuite,
+                        steps: steps,
+                        result: result,
+                        specifications: specifications,
+                        status: status,
+                        timestamp: new Date().toISOString(),
+                        duration: 0,
+                        lastModified: new Date().toISOString()
+                    };
+                    testCases.push(newTestCase);
+                    
+                    // Transférer les images des étapes temporaires vers les étapes sauvegardées
+                    steps.forEach((step, index) => {
+                        const tempKey = `modal-${index + 1}`;
+                        const savedKey = `${newTestCase.id}-${index}`;
+                        if (stepImages[tempKey]) {
+                            stepImages[savedKey] = stepImages[tempKey];
+                            delete stepImages[tempKey];
+                        }
+                    });
+                }
+                
+                // Mémoriser le jeu de test sélectionné
+                lastUsedTestSuite = testSuite;
+                
+                saveData();
+                updateDisplay();
+                document.body.removeChild(modal);
+            }
+            
+            // Fonction pour annuler
+            function cancelModalTestCase() {
+                document.body.removeChild(modal);
+            }
+            
+            // Événements des boutons
+            modalContent.querySelector('#saveTestCaseBtn').addEventListener('click', saveModalTestCase);
+            modalContent.querySelector('#cancelTestCaseBtn').addEventListener('click', cancelModalTestCase);
+            
+            // Fermer avec Échap
+            modal.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    cancelModalTestCase();
+                }
+            });
+            
+            // Focus sur le premier champ
+            modalContent.querySelector('#modalTestTitle').focus();
+        }
+        
+        // Éditer un cas de test existant
+        function editTestCase(testId) {
+            openTestCaseModal(testId);
+        }
+
         // Changer le statut d'un cas de test
         function toggleStatus(testId) {
             const testCase = testCases.find(tc => tc.id === testId);
@@ -2183,22 +2718,22 @@
             document.getElementById('resultInput').value = '';
             document.getElementById('statusSelect').value = 'pending';
             
+            // Charger les spécifications existantes (optionnel pour la suite)
+            if (originalTestCase.specifications && originalTestCase.specifications.length > 0) {
+                setCurrentSpecifications(originalTestCase.specifications);
+            } else {
+                setCurrentSpecifications([]);
+            }
+            
             // Redémarrer le timer
             currentTestStartTime = new Date();
             
-            // Mettre à jour l'affichage des étapes courantes
-            updateCurrentStepsDisplay();
-            
-            // Faire défiler vers la section de création
-            document.querySelector('.input-section').scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
+            // Faire défiler vers le haut de la page
+            window.scrollTo({ 
+                top: 0, 
+                behavior: 'smooth' 
             });
             
-            // Focus sur le champ d'ajout d'étape
-            setTimeout(() => {
-                document.getElementById('stepInput').focus();
-            }, 500);
         }
 
         // Afficher les options d'export
@@ -2421,12 +2956,16 @@
                 
                 // Ajouter le fichier CSV
                 // Générer le contenu CSV simple
-                const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Images', 'Résultat', 'Date'];
+                const headers = ['ID', 'Titre', 'Jeu de Test', 'Statut', 'Étapes', 'Images', 'Résultat', 'Spécifications', 'Date'];
                 const rows = filteredCases.map(tc => {
                     const stepImagesList = tc.steps.map((step, index) => {
                         const stepKey = `${tc.id}-${index}`;
                         return stepImages[stepKey] ? 'OUI' : 'NON';
                     });
+                    
+                    const specsText = tc.specifications && tc.specifications.length > 0 
+                        ? tc.specifications.map(spec => `${spec.status === 'ok' ? 'OK' : 'KO'}: ${spec.text}`).join(' | ')
+                        : '';
                     
                     return [
                         tc.id,
@@ -2436,6 +2975,7 @@
                         tc.steps.join(' ˃ '),
                         stepImagesList.join(' | '),
                         tc.result || '',
+                        specsText,
                         tc.timestamp
                     ];
                 });
@@ -2571,6 +3111,15 @@
                         md += `**Résultat :** ${testCase.result}\n\n`;
                     }
                     
+                    if (testCase.specifications && testCase.specifications.length > 0) {
+                        md += `**Spécifications vérifiées :**\n`;
+                        testCase.specifications.forEach(spec => {
+                            const statusIcon = spec.status === 'ok' ? '✅' : '❌';
+                            md += `- ${statusIcon} ${spec.text}\n`;
+                        });
+                        md += `\n`;
+                    }
+                    
                     md += `\n`;
                     md += `---\n\n`;
                 });
@@ -2656,6 +3205,13 @@
                 });
                 if (testCase.result) {
                     report += `Résultat: ${testCase.result}\n`;
+                }
+                if (testCase.specifications && testCase.specifications.length > 0) {
+                    report += `Spécifications vérifiées:\n`;
+                    testCase.specifications.forEach(spec => {
+                        const statusText = spec.status === 'ok' ? 'OK' : 'KO';
+                        report += `  ${statusText}: ${spec.text}\n`;
+                    });
                 }
                 report += `\n${'-'.repeat(30)}\n\n`;
             });
@@ -2885,6 +3441,45 @@
                 }
             });
             
+            // Fonctions globales pour gérer les images
+            window.showImageModal = function(imageSrc) {
+                const modal = document.createElement('div');
+                modal.className = 'step-image-modal';
+                modal.onclick = () => modal.remove();
+                modal.innerHTML = `<img src="${imageSrc}" alt="Screenshot">`;
+                document.body.appendChild(modal);
+            };
+
+            window.showInlineThumbnail = function(event, imageSrc) {
+                // Supprimer toute miniature existante
+                hideInlineThumbnail();
+
+                const indicator = event.target;
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'inline-step-thumbnail';
+                thumbnail.innerHTML = `<img src="${imageSrc}" alt="Miniature">`;
+
+                // Positionner la miniature
+                const rect = indicator.getBoundingClientRect();
+                thumbnail.style.position = 'fixed';
+                thumbnail.style.top = (rect.bottom + 5) + 'px';
+                thumbnail.style.left = (rect.left + rect.width / 2) + 'px';
+                thumbnail.style.transform = 'translateX(-50%)';
+                thumbnail.style.display = 'block';
+
+                document.body.appendChild(thumbnail);
+
+                // Supprimer la miniature si on quitte l'indicateur
+                indicator.addEventListener('mouseleave', hideInlineThumbnail, { once: true });
+            };
+
+            window.hideInlineThumbnail = function() {
+                const existingThumbnail = document.querySelector('.inline-step-thumbnail');
+                if (existingThumbnail) {
+                    existingThumbnail.remove();
+                }
+            };
+
             // Initialisation
             loadData();
         });
