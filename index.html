@@ -14,21 +14,24 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f8f9fa;
             min-height: 100vh;
             padding: 20px;
+            line-height: 1.6;
+            color: #333;
         }
 
         .container {
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             overflow: hidden;
+            border: 1px solid #e9ecef;
         }
 
         .header {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+            background: #495057;
             color: white;
             padding: 30px;
             text-align: center;
@@ -36,24 +39,29 @@
         }
 
         .header h1 {
-            font-size: 2.5em;
+            font-size: 2.2em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 400;
+            letter-spacing: -0.02em;
         }
 
         .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
+            opacity: 0.85;
+            font-size: 1em;
+            font-weight: 300;
+            line-height: 1.5;
         }
 
         .test-suite-selector {
             position: absolute;
             top: 20px;
             right: 30px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             padding: 10px 15px;
             border-radius: 8px;
-            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .test-suite-selector select {
@@ -61,7 +69,6 @@
             border: none;
             padding: 5px 10px;
             border-radius: 5px;
-            margin-right: 10px;
             font-size: 12px;
         }
 
@@ -73,7 +80,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 12px;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
         }
 
         .test-suite-selector button:hover {
@@ -81,15 +88,15 @@
         }
 
         .btn-add-suite {
-            background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
+            background: #6c757d !important;
             color: white !important;
             border: none !important;
             border-radius: 6px !important;
             padding: 8px 12px !important;
             cursor: pointer !important;
             font-size: 16px !important;
-            font-weight: bold !important;
-            transition: all 0.3s ease !important;
+            font-weight: normal !important;
+            transition: all 0.2s ease !important;
             min-width: 40px !important;
             height: 40px !important;
             display: flex !important;
@@ -98,9 +105,7 @@
         }
 
         .btn-add-suite:hover {
-            background: linear-gradient(135deg, #229954, #27ae60) !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3) !important;
+            background: #5a6268 !important;
         }
 
         .main-content {
@@ -129,12 +134,12 @@
             border: 2px solid #e1e8ed;
             border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
         }
 
         input[type="text"]:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: #6c757d;
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
 
@@ -144,17 +149,18 @@
         }
 
         .btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: #6c757d;
             color: white;
             border: none;
             padding: 12px 25px;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-weight: 400;
+            transition: all 0.2s ease;
             margin-right: 10px;
             margin-bottom: 10px;
+            line-height: 1.4;
         }
 
         .btn-small {
@@ -170,14 +176,14 @@
             border-radius: 4px;
             margin: 5px 0;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             border: 2px solid #e1e8ed;
         }
 
         .step-image:hover {
-            transform: scale(1.05);
-            border-color: #3498db;
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            transform: scale(1.02);
+            border-color: #6c757d;
+            box-shadow: 0 2px 6px rgba(108, 117, 125, 0.2);
         }
 
         .step-image-modal {
@@ -203,7 +209,7 @@
 
         .inline-step-image-indicator {
             display: inline-block;
-            background: #3498db;
+            background: #6c757d;
             color: white;
             border-radius: 50%;
             width: 16px;
@@ -213,13 +219,13 @@
             line-height: 16px;
             margin-left: 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             position: relative;
         }
 
         .inline-step-image-indicator:hover {
-            background: #2980b9;
-            transform: scale(1.2);
+            background: #5a6268;
+            transform: scale(1.1);
         }
 
         .inline-step-image-indicator:hover::after {
@@ -244,7 +250,7 @@
             border: 2px solid #3498db;
             border-radius: 8px;
             padding: 5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
             z-index: 1000;
             max-width: 200px;
             max-height: 150px;
@@ -259,24 +265,27 @@
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            opacity: 0.9;
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #27ae60, #229954);
+            background: #28a745;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: #dc3545;
         }
 
         .btn-export {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
+            background: #6c757d;
         }
 
         .btn-import {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: #6c757d;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
         }
 
 
@@ -286,7 +295,7 @@
 
 
         .suite-name-editable {
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
         }
 
         .suite-name-editable:hover {
@@ -307,7 +316,7 @@
 
         .test-title-editable, .inline-title-editable {
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
         }
 
         .test-title-editable:hover, .inline-title-editable:hover {
@@ -319,7 +328,7 @@
 
         .test-step-editable {
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
         }
 
         .test-step-editable:hover {
@@ -330,7 +339,7 @@
 
         .test-result-editable {
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
         }
 
         .test-result-editable:hover {
@@ -360,7 +369,7 @@
             border-radius: 4px;
             border-left: 3px solid #3498db;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             white-space: pre-line;
             word-wrap: break-word;
             max-width: 100%;
@@ -381,37 +390,12 @@
             border-radius: 4px;
             border-left: 3px solid #6c757d;
             white-space: pre-line;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
         }
 
         .inline-specs:hover {
             background: #e9ecef;
             border-left-color: #3498db;
-        }
-
-        .continue-btn {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-left: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .continue-btn:hover {
-            background: linear-gradient(135deg, #229954, #27ae60);
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
-        }
-
-        .continue-btn:active {
-            transform: scale(0.95);
         }
 
         .test-cases {
@@ -422,10 +406,12 @@
         }
 
         .test-cases h2 {
-            color: #2c3e50;
+            color: #495057;
             padding: 25px 25px 0;
             margin-bottom: 20px;
             font-size: 1.5em;
+            font-weight: 500;
+            line-height: 1.3;
         }
 
         .view-toggle {
@@ -441,7 +427,7 @@
             margin: 0 5px;
             border-radius: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             font-size: 12px;
             font-weight: 600;
         }
@@ -456,12 +442,12 @@
             padding: 20px;
             border: 2px solid #e1e8ed;
             border-radius: 12px;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             position: relative;
         }
 
         .test-case:hover {
-            border-color: #3498db;
+            border-color: #6c757d;
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
         }
 
@@ -484,11 +470,11 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
         }
 
         .status:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
@@ -498,18 +484,18 @@
         }
 
         .status-ok {
-            background: #d5f4e6;
-            color: #27ae60;
+            background: #d4edda;
+            color: #155724;
         }
 
         .status-ko {
-            background: #fadbd8;
-            color: #e74c3c;
+            background: #f8d7da;
+            color: #721c24;
         }
 
         .status-pending {
-            background: #fef9e7;
-            color: #f39c12;
+            background: #fff3cd;
+            color: #856404;
         }
 
         .test-steps {
@@ -558,13 +544,13 @@
             margin: 4px 0;
             border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             border: 1px solid transparent;
         }
 
         .spec-item:hover {
             background: rgba(52, 152, 219, 0.1);
-            border-color: #3498db;
+            border-color: #6c757d;
         }
 
         .spec-item.spec-ok {
@@ -579,12 +565,30 @@
 
         .spec-status-icon {
             margin-right: 8px;
-            font-size: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            min-width: 20px;
+            text-align: center;
         }
 
         .spec-text {
             flex: 1;
             font-size: 14px;
+        }
+
+        .spec-item.spec-ok .spec-status-icon {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .spec-item.spec-ko .spec-status-icon {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
         .timer {
@@ -610,7 +614,7 @@
             border-radius: 8px;
             border-left: 5px solid #3498db;
             background: #f8f9fa;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             font-size: 14px;
             position: relative;
         }
@@ -625,28 +629,28 @@
         }
 
         .inline-test.status-ok {
-            border-left-color: #27ae60;
+            border-left-color: #28a745;
         }
 
         .inline-test.status-ko {
-            border-left-color: #e74c3c;
+            border-left-color: #dc3545;
         }
 
         .inline-test.status-pending {
-            border-left-color: #f39c12;
+            border-left-color: #ffc107;
         }
 
         .inline-status {
             font-size: 16px;
             margin-right: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             margin-top: 2px;
             flex-shrink: 0;
         }
 
         .inline-status:hover {
-            transform: scale(1.2);
+            transform: scale(1.1);
         }
 
         .inline-step {
@@ -658,14 +662,14 @@
             border-radius: 15px;
             font-size: 11px;
             margin: 2px;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             cursor: pointer;
         }
 
         .inline-step:hover {
-            background: #3498db;
+            background: #6c757d;
             color: white;
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
 
 
@@ -687,11 +691,11 @@
         }
 
         .inline-actions {
+            background: none;
             margin-left: 10px;
         }
 
         .inline-actions button {
-            background: none;
             border: none;
             cursor: pointer;
             padding: 2px 5px;
@@ -727,12 +731,7 @@
         }
 
         .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            opacity: 1;
         }
 
         /* Styles pour les modals */
@@ -760,7 +759,7 @@
             max-height: 80vh !important;
             overflow-y: auto !important;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
-            animation: fadeIn 0.3s ease !important;
+            opacity: 1 !important;
             position: relative !important;
             z-index: 10000 !important;
             margin: 0 !important;
@@ -838,9 +837,11 @@
         }
 
         .stats-header h2 {
-            color: #2c3e50;
+            color: #495057;
             margin: 0;
             font-size: 1.8em;
+            font-weight: 500;
+            line-height: 1.3;
         }
 
         .stats-grid {
@@ -968,7 +969,7 @@
             gap: 8px;
             padding: 8px 15px;
             border-radius: 20px;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             background: rgba(255, 255, 255, 0.1);
         }
 
@@ -999,10 +1000,10 @@
                 <select id="headerTestSuiteSelect" onchange="switchTestSuiteFromHeader()">
                     <option value="">Tous les jeux de test</option>
                 </select>
-                <button onclick="createNewTestSuite()" class="btn-add-suite" title="Créer un nouveau jeu de test">➕</button>
-                <button onclick="showTestSuiteStats()">📊 Stats</button>
+                <button onclick="createNewTestSuite()" class="btn-add-suite" title="Créer un nouveau jeu de test">+</button>
+                <button onclick="showTestSuiteStats()">Stats</button>
             </div>
-            <h1>🧪 Test Case Tracker</h1>
+            <h1>Test Case Tracker</h1>
             <p>Outil de suivi en temps réel pour vos cas de test</p>
         </div>
         
@@ -1011,18 +1012,18 @@
                 <h2>Cas de Test Réalisés</h2>
                 
                 <div class="view-toggle">
-                    <button id="detailedViewBtn" onclick="switchView('detailed')">📋 Vue Détaillée</button>
-                    <button id="inlineViewBtn" class="active" onclick="switchView('inline')">📊 Vue en Ligne</button>
+                    <button id="detailedViewBtn" onclick="switchView('detailed')">Vue Détaillée</button>
+                    <button id="inlineViewBtn" class="active" onclick="switchView('inline')">Vue en Ligne</button>
                 </div>
                 
                 <div id="testCasesDetailed" style="display: none;"></div>
                 <div id="testCasesInline"></div>
                 
                 <div class="controls">
-                    <button class="btn btn-success" onclick="openTestCaseModal()" style="background: linear-gradient(135deg, #27ae60, #2ecc71);">💾 Nouveau Cas de Test</button>
-                    <button class="btn btn-export" onclick="showExportOptions()">📄 Exporter les Résultats</button>
-                    <button class="btn btn-import" onclick="importFromJSON()">📥 Importer JSON</button>
-                    <button class="btn btn-danger" onclick="clearAllTests()">🗑️ Effacer Tout</button>
+                    <button class="btn btn-success" onclick="openTestCaseModal()">Nouveau Cas de Test</button>
+                    <button class="btn btn-export" onclick="showExportOptions()">Exporter les Résultats</button>
+                    <button class="btn btn-import" onclick="importFromJSON()">Importer JSON</button>
+                    <button class="btn btn-danger" onclick="clearAllTests()">Effacer Tout</button>
                 </div>
             </div>
         </div>
@@ -1046,7 +1047,7 @@
                 </a>
             </div>
             <p class="footer-text">
-                Développé avec ❤️ pour simplifier le suivi de vos cas de test
+                Développé pour simplifier le suivi de vos cas de test
             </p>
         </div>
     </footer>
@@ -1546,10 +1547,10 @@
             container.innerHTML = filteredCases.map(testCase => {
                 const statusClass = `status-${testCase.status}`;
                 const statusText = {
-                    'todo': '📋 À faire',
-                    'ok': '✅ OK',
-                    'ko': '❌ KO',
-                    'pending': '⏳ En cours'
+                    'todo': 'À faire',
+                    'ok': 'OK',
+                    'ko': 'KO',
+                    'pending': 'En cours'
                 }[testCase.status];
 
                 return `
@@ -1560,7 +1561,7 @@
                                 <span style="color: #7f8c8d; font-size: 0.9em;"> - ${testCase.testSuite || 'Sans jeu'}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <button class="btn btn-small" onclick="editTestCase(${testCase.id})" style="background: linear-gradient(135deg, #3498db, #2980b9); font-size: 12px; padding: 4px 8px;">✏️ Éditer</button>
+                                <button class="btn btn-small" onclick="editTestCase(${testCase.id})" style="background: #6c757d; font-size: 12px; padding: 4px 8px;" title="Éditer ce cas de test">✏️</button>
                             <div class="status ${statusClass}" onclick="toggleStatus(${testCase.id})" title="Cliquer pour changer le statut">${statusText}</div>
                             </div>
                         </div>
@@ -1609,8 +1610,8 @@
                                     ${testCase.steps.length} étape${testCase.steps.length > 1 ? 's' : ''}
                                 </div>
                                 <div style="display: flex; gap: 8px; align-items: center;">
-                                    <button class="continue-btn" onclick="continueTestCase(${testCase.id})" title="Continuer ce test avec de nouvelles étapes">🔄 Continuer</button>
-                                    <button style="background: none; border: none; color: #e74c3c; cursor: pointer;" onclick="deleteTestCase(${testCase.id})">🗑️</button>
+                                    <button onclick="copyTestCase(${testCase.id})" title="Copier ce cas de test">📋</button>
+                                    <button style="background: none; border: none; color: #dc3545; cursor: pointer;" onclick="deleteTestCase(${testCase.id})" title="Supprimer ce cas de test">🗑️</button>
                                 </div>
                             </div>
                         </div>
@@ -1653,9 +1654,9 @@
                 html += `
                     <div class="test-suite-group">
                         <div class="suite-header">
-                            <span class="suite-name-editable" onclick="editTestSuiteName('${suiteName}')" style="font-size: 1.2em; font-weight: bold; cursor: pointer;" title="Cliquer pour modifier le nom du jeu de test">📦 ${suiteName}</span>
+                            <span class="suite-name-editable" onclick="editTestSuiteName('${suiteName}')" style="font-size: 1.2em; font-weight: bold; cursor: pointer;" title="Cliquer pour modifier le nom du jeu de test">${suiteName}</span>
                             <span class="suite-stats">
-                                ${stats.total} tests | 📋 ${stats.todo} | ✅ ${stats.ok} | ❌ ${stats.ko} | ⏳ ${stats.pending}
+                                ${stats.total} tests | À faire: ${stats.todo} | OK: ${stats.ok} | KO: ${stats.ko} | En cours: ${stats.pending}
                             </span>
                         </div>
                         <div class="suite-content">
@@ -1663,9 +1664,9 @@
                 
                 cases.forEach(testCase => {
                     const statusIcon = {
-                        'todo': '📋',
-                        'ok': '✅',
-                        'ko': '❌',
+                        'todo': 'À faire',
+                        'ok': 'OK',
+                        'ko': 'KO',
                         'pending': '⏳'
                     }[testCase.status];
 
@@ -1706,10 +1707,10 @@
                                     ${specsSummary || '<span style="color: #7f8c8d; font-style: italic;">Aucune spécification définie</span>'}
                                 </div>
                             </div>
-                            <div class="inline-actions">
-                                <button class="edit-btn" onclick="editTestCase(${testCase.id})" title="Éditer ce test" style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; padding: 4px 8px; border-radius: 4px; margin-right: 4px;">✏️</button>
-                                <button class="continue-btn" onclick="continueTestCase(${testCase.id})" title="Continuer ce test">🔄</button>
-                                <button onclick="deleteTestCase(${testCase.id})" title="Supprimer">🗑️</button>
+                            <div class="inline-actions" style="display: flex; flex-direction: column; gap: 4px;">
+                                <button onclick="editTestCase(${testCase.id})" title="Éditer ce cas de test">✏️</button>
+                                <button onclick="copyTestCase(${testCase.id})" title="Copier ce cas de test">📋</button>
+                                <button onclick="deleteTestCase(${testCase.id})" title="Supprimer ce cas de test">🗑️</button>
                             </div>
                         </div>
                     `;
@@ -1802,16 +1803,16 @@
             const statusSelect = document.createElement('select');
             statusSelect.style.cssText = 'padding: 6px; border: 1px solid #ddd; border-radius: 4px;';
             statusSelect.innerHTML = `
-                <option value="ok" ${spec.status === 'ok' ? 'selected' : ''}>✅ OK</option>
-                <option value="ko" ${spec.status === 'ko' ? 'selected' : ''}>❌ KO</option>
+                <option value="ok" ${spec.status === 'ok' ? 'selected' : ''}>OK</option>
+                <option value="ko" ${spec.status === 'ko' ? 'selected' : ''}>KO</option>
             `;
             
             const saveBtn = document.createElement('button');
-            saveBtn.textContent = '💾';
+            saveBtn.textContent = 'Sauvegarder';
             saveBtn.style.cssText = 'padding: 6px 8px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer;';
             
             const cancelBtn = document.createElement('button');
-            cancelBtn.textContent = '❌';
+            cancelBtn.textContent = 'Annuler';
             cancelBtn.style.cssText = 'padding: 6px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;';
             
             editContainer.appendChild(textInput);
@@ -2057,7 +2058,7 @@
                             <select id="modalTestSuite" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                                 <option value="">Sélectionner un jeu de test...</option>
                             </select>
-                            <button type="button" id="addNewTestSuiteBtn" class="btn btn-small" style="background: linear-gradient(135deg, #27ae60, #2ecc71); padding: 8px 12px; flex: 0 0 auto;" title="Créer un nouveau jeu de test">➕</button>
+                            <button type="button" id="addNewTestSuiteBtn" class="btn btn-small" style="background: #6c757d; padding: 8px 12px; flex: 0 0 auto;" title="Créer un nouveau jeu de test">+</button>
                         </div>
                     </div>
                     
@@ -2066,11 +2067,11 @@
                         <div id="modalStepsContainer"></div>
                         <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
                             <input type="text" id="modalNewStepText" placeholder="Nouvelle étape..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                            <button type="button" id="addNewStepBtn" class="btn btn-small" style="background: linear-gradient(135deg, #3498db, #2980b9); padding: 8px 12px;">➕</button>
+                            <button type="button" id="addNewStepBtn" class="btn btn-small" style="background: #28a745; padding: 8px 12px;">+</button>
                         </div>
                         <div style="display: flex; gap: 8px; margin-top: 8px;">
-                            <button type="button" id="addImageBtn" class="btn btn-small" style="background: linear-gradient(135deg, #9b59b6, #8e44ad); padding: 8px 12px;">📷 Charger Image</button>
-                            <button type="button" id="pasteImageBtn" class="btn btn-small" style="background: linear-gradient(135deg, #e67e22, #d35400); padding: 8px 12px;">📋 Coller Screenshot</button>
+                            <button type="button" id="addImageBtn" class="btn btn-small" style="background: #6c757d; padding: 8px 12px;">Charger Image</button>
+                            <button type="button" id="pasteImageBtn" class="btn btn-small" style="background: #6c757d; padding: 8px 12px;">Coller Screenshot</button>
                             <input type="file" id="modalStepImageInput" accept="image/*" style="display: none;" onchange="addStepWithImage()">
                         </div>
                     </div>
@@ -2087,9 +2088,9 @@
                             <input type="text" id="modalNewSpecText" placeholder="Nouvelle spécification..." style="flex: 2; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                             <label style="display: flex; align-items: center; gap: 4px; flex: 0 0 auto; cursor: pointer;">
                                 <input type="checkbox" id="modalNewSpecStatus" checked style="transform: scale(1.2);">
-                                <span>✅ OK</span>
+                                <span>OK</span>
                             </label>
-                            <button type="button" id="addNewSpecBtn" class="btn btn-small" style="background: linear-gradient(135deg, #27ae60, #2ecc71); padding: 8px 12px; flex: 0 0 auto;">➕</button>
+                            <button type="button" id="addNewSpecBtn" class="btn btn-small" style="background: #28a745; padding: 8px 12px; flex: 0 0 auto;">+</button>
                         </div>
                     </div>
                     
@@ -2105,8 +2106,8 @@
                 </div>
                 
                 <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
-                    <button id="saveTestCaseBtn" class="btn btn-success">💾 ${isEdit ? 'Mettre à jour' : 'Créer'}</button>
-                    <button id="cancelTestCaseBtn" class="btn" style="background: #95a5a6;">❌ Annuler</button>
+                    <button id="saveTestCaseBtn" class="btn btn-success">${isEdit ? 'Mettre à jour' : 'Créer'}</button>
+                    <button id="cancelTestCaseBtn" class="btn btn-secondary">Annuler</button>
                 </div>
             `;
             
@@ -2697,43 +2698,42 @@
             }
         }
 
-        // Continuer un cas de test existant
-        function continueTestCase(id) {
+
+        // Copier un cas de test existant
+        function copyTestCase(id) {
             const originalTestCase = testCases.find(tc => tc.id === id);
             if (!originalTestCase) return;
 
-            // Charger les étapes du cas de test original
-            currentSteps = [...originalTestCase.steps];
+            // Créer une copie complète du cas de test en utilisant JSON
+            const copiedTestCase = JSON.parse(JSON.stringify(originalTestCase));
             
-            // Définir le jeu de test actuel
-            currentTestSuite = originalTestCase.testSuite;
-            document.getElementById('testSuiteSelect').value = currentTestSuite;
-            
-            // Créer un titre pour la suite
-            const originalTitle = originalTestCase.title || `Test Case #${originalTestCase.id}`;
-            const newTitle = `Suite de ${originalTitle}`;
-            document.getElementById('testTitleInput').value = newTitle;
-            
-            // Vider les autres champs
-            document.getElementById('resultInput').value = '';
-            document.getElementById('statusSelect').value = 'pending';
-            
-            // Charger les spécifications existantes (optionnel pour la suite)
-            if (originalTestCase.specifications && originalTestCase.specifications.length > 0) {
-                setCurrentSpecifications(originalTestCase.specifications);
-            } else {
-                setCurrentSpecifications([]);
+            // Modifier les propriétés spécifiques à la copie
+            copiedTestCase.id = Date.now(); // Nouvel ID unique
+            copiedTestCase.title = (copiedTestCase.title || `Test Case #${originalTestCase.id}`) + ' (Copie)';
+            copiedTestCase.status = 'todo'; // Statut par défaut pour la copie
+            copiedTestCase.timestamp = new Date().toISOString();
+
+            // Copier les images associées aux étapes
+            if (originalTestCase.steps && originalTestCase.steps.length > 0) {
+                originalTestCase.steps.forEach((step, index) => {
+                    const originalStepKey = `${originalTestCase.id}-${index}`;
+                    const copiedStepKey = `${copiedTestCase.id}-${index}`;
+                    
+                    // Copier l'image si elle existe
+                    if (stepImages[originalStepKey]) {
+                        stepImages[copiedStepKey] = stepImages[originalStepKey];
+                    }
+                });
             }
+
+            // Ajouter temporairement le cas de test copié à la liste
+            testCases.push(copiedTestCase);
             
-            // Redémarrer le timer
-            currentTestStartTime = new Date();
+            // Sauvegarder les données (y compris les nouvelles images)
+            saveData();
             
-            // Faire défiler vers le haut de la page
-            window.scrollTo({ 
-                top: 0, 
-                behavior: 'smooth' 
-            });
-            
+            // Ouvrir la modale d'édition normale avec l'ID du cas de test copié
+            openTestCaseModal(copiedTestCase.id);
         }
 
         // Afficher les options d'export
@@ -2964,7 +2964,7 @@
                     });
                     
                     const specsText = tc.specifications && tc.specifications.length > 0 
-                        ? tc.specifications.map(spec => `${spec.status === 'ok' ? 'OK' : 'KO'}: ${spec.text}`).join(' | ')
+                        ? tc.specifications.map(spec => `${spec.status === 'ok' ? '✅' : '❌'}: ${spec.text}`).join(' | ')
                         : '';
                     
                     return [
@@ -3086,9 +3086,9 @@
                 
                 cases.forEach(testCase => {
                     const statusIcon = {
-                        'todo': '📋',
-                        'ok': '✅',
-                        'ko': '❌',
+                        'todo': 'À faire',
+                        'ok': 'OK',
+                        'ko': 'KO',
                         'pending': '⏳'
                     }[testCase.status];
                     
@@ -3209,7 +3209,7 @@
                 if (testCase.specifications && testCase.specifications.length > 0) {
                     report += `Spécifications vérifiées:\n`;
                     testCase.specifications.forEach(spec => {
-                        const statusText = spec.status === 'ok' ? 'OK' : 'KO';
+                        const statusText = spec.status === 'ok' ? '✅' : '❌';
                         report += `  ${statusText}: ${spec.text}\n`;
                     });
                 }
