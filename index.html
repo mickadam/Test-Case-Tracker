@@ -1364,12 +1364,20 @@
             const element = event.target;
             const currentStep = testCase.steps[stepIndex];
             
-            // Créer un input temporaire (une seule ligne)
-            const input = document.createElement('input');
-            input.type = 'text';
+            // Créer un textarea temporaire
+            const input = document.createElement('textarea');
             input.value = currentStep;
             input.className = 'editing-input';
-            input.style.width = Math.max(200, currentStep.length * 8) + 'px';
+            input.style.cssText = `
+                width: 100%;
+                min-width: 200px;
+                min-height: 40px;
+                padding: 6px;
+                border: 2px solid #3498db;
+                border-radius: 4px;
+                font-family: inherit;
+                resize: vertical;
+            `;
             
             // Remplacer temporairement l'élément
             element.parentNode.replaceChild(input, element);
@@ -1393,8 +1401,9 @@
             }
             
             input.addEventListener('blur', saveStep);
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    e.preventDefault();
                     saveStep();
                 } else if (e.key === 'Escape') {
                     cancelEdit();
@@ -1590,7 +1599,7 @@
                             ${testCase.steps.map((step, index) => {
                                 const stepKey = `${testCase.id}-${index}`;
                                 const image = stepImages[stepKey];
-                                const imageHtml = image ? `<img src="${image}" class="step-image" onclick="showImageModal('${image}')" title="Cliquer pour agrandir">` : '';
+                                const imageHtml = image ? `<img src="${image}" class="step-image" onclick="showImageModal(\`${image.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" title="Cliquer pour agrandir">` : '';
                                 
                                 return `<div class="test-step test-step-editable" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">
                                     ${index + 1}. ${step}
@@ -1611,7 +1620,7 @@
                             ${testCase.specifications && testCase.specifications.length > 0 ? `
                                 <div class="specs-list">
                                     ${testCase.specifications.map(spec => `
-                                        <div class="spec-item spec-${spec.status}" onclick="editSpecification(${testCase.id}, '${spec.text.replace(/'/g, "\\'")}')" title="Cliquer pour modifier cette spécification">
+                                        <div class="spec-item spec-${spec.status}" onclick="editSpecification(${testCase.id}, \`${spec.text.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" title="Cliquer pour modifier cette spécification">
                                             <span class="spec-status-icon">${spec.status === 'ok' ? '✅' : '❌'}</span>
                                             <span class="spec-text">${spec.text}</span>
                                         </div>
@@ -1674,7 +1683,7 @@
                 html += `
                     <div class="test-suite-group">
                         <div class="suite-header">
-                            <span class="suite-name-editable" onclick="editTestSuiteName('${suiteName}')" style="font-size: 1.2em; font-weight: bold; cursor: pointer;" title="Cliquer pour modifier le nom du jeu de test">${suiteName}</span>
+                            <span class="suite-name-editable" onclick="editTestSuiteName(\`${suiteName.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" style="font-size: 1.2em; font-weight: bold; cursor: pointer;" title="Cliquer pour modifier le nom du jeu de test">${suiteName}</span>
                             <span class="suite-stats">
                                 ${stats.total} tests | 📋 ${stats.todo} | ✅ ${stats.ok} | ❌ ${stats.ko} | ⏳ ${stats.pending}
                             </span>
@@ -1696,9 +1705,9 @@
                         const image = stepImages[stepKey];
                         const imageIndicator = image ? 
                             `<span class="inline-step-image-indicator" 
-                                   onclick="event.stopPropagation(); showImageModal('${image}')" 
+                                   onclick="event.stopPropagation(); showImageModal(\`${image.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" 
                                    title="Cliquer pour voir l'image complète"
-                                   onmouseenter="showInlineThumbnail(event, '${image}')" 
+                                   onmouseenter="showInlineThumbnail(event, \`${image.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" 
                                    onmouseleave="hideInlineThumbnail(event)">📷</span>` : '';
 
                         return `<span class="inline-step" onclick="editStep(${testCase.id}, ${index})" title="Cliquer pour modifier cette étape">
@@ -1714,7 +1723,7 @@
                     html += `
                         <div class="inline-test status-${testCase.status} fade-in">
                             <span class="inline-status" onclick="toggleStatus(${testCase.id})" title="Cliquer pour changer le statut">${statusIcon}</span>
-                            <span class="inline-id inline-title-editable" onclick="editTestCaseTitle(${testCase.id})" title="Cliquer pour modifier le titre - ${testCase.title || `Test Case #${testCase.id}`}">${testCase.title || `Test Case #${testCase.id}`}</span>
+                            <span class="inline-id inline-title-editable" onclick="editTestCaseTitle(${testCase.id})" title="Cliquer pour modifier le titre - ${(testCase.title || `Test Case #${testCase.id}`).replace(/"/g, '&quot;')}">${testCase.title || `Test Case #${testCase.id}`}</span>
                             <div class="inline-summary">
                                 <div class="inline-steps-flow">
                                     ${stepsFlow}
@@ -1805,7 +1814,7 @@
             editContainer.className = 'spec-edit-container';
             editContainer.style.cssText = `
                 display: flex;
-                align-items: center;
+                align-items: flex-start;
                 gap: 8px;
                 padding: 8px;
                 background: white;
@@ -1814,13 +1823,12 @@
                 margin: 4px 0;
             `;
             
-            const textInput = document.createElement('input');
-            textInput.type = 'text';
+            const textInput = document.createElement('textarea');
             textInput.value = spec.text;
-            textInput.style.cssText = 'flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 4px;';
+            textInput.style.cssText = 'flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 4px; min-height: 40px; resize: vertical; font-family: inherit;';
             
             const statusSelect = document.createElement('select');
-            statusSelect.style.cssText = 'padding: 6px; border: 1px solid #ddd; border-radius: 4px;';
+            statusSelect.style.cssText = 'padding: 6px; border: 1px solid #ddd; border-radius: 4px; margin-top: 0;';
             statusSelect.innerHTML = `
                 <option value="ok" ${spec.status === 'ok' ? 'selected' : ''}>OK</option>
                 <option value="ko" ${spec.status === 'ko' ? 'selected' : ''}>KO</option>
@@ -1828,11 +1836,11 @@
             
             const saveBtn = document.createElement('button');
             saveBtn.textContent = 'Sauvegarder';
-            saveBtn.style.cssText = 'padding: 6px 8px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer;';
+            saveBtn.style.cssText = 'padding: 6px 8px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 0;';
             
             const cancelBtn = document.createElement('button');
             cancelBtn.textContent = 'Annuler';
-            cancelBtn.style.cssText = 'padding: 6px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;';
+            cancelBtn.style.cssText = 'padding: 6px 8px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 0;';
             
             editContainer.appendChild(textInput);
             editContainer.appendChild(statusSelect);
@@ -1871,7 +1879,7 @@
             cancelBtn.addEventListener('click', cancelEdit);
             
             textInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && e.ctrlKey) {
                     e.preventDefault();
                     saveSpecification();
                 } else if (e.key === 'Escape') {
@@ -2163,6 +2171,7 @@
                 } else {
                     addModalStep();
                 }
+                // Ne pas ajouter de champ vide pour l'édition - l'utilisateur peut en ajouter s'il le souhaite
                 
                 // Charger les spécifications
                 const specsContainer = modalContent.querySelector('#modalSpecsContainer');
@@ -2207,7 +2216,7 @@
                         if (stepImages[originalStepKey]) {
                             // Copier l'image vers la clé temporaire
                             stepImages[stepKey] = stepImages[originalStepKey];
-                            imageHtml = `<img src="${stepImages[originalStepKey]}" class="step-image" onclick="showImageModal('${stepImages[originalStepKey]}')" title="Cliquer pour agrandir">`;
+                            imageHtml = `<img src="${stepImages[originalStepKey]}" class="step-image" onclick="showImageModal(\`${stepImages[originalStepKey].replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" title="Cliquer pour agrandir">`;
                         }
                     }
                 }
@@ -2380,7 +2389,7 @@
                     stepGroup.innerHTML = `
                         <div style="flex: 1;">
                             <div style="font-weight: bold; margin-bottom: 4px;">${stepIndex}. ${stepText}</div>
-                            <img src="${e.target.result}" class="step-image" onclick="showImageModal('${e.target.result}')" title="Cliquer pour agrandir">
+                            <img src="${e.target.result}" class="step-image" onclick="showImageModal(\`${e.target.result.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" title="Cliquer pour agrandir">
                         </div>
                         <button type="button" onclick="removeModalStep(this)" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 4px;">✕</button>
                     `;
@@ -2450,7 +2459,7 @@
                                     stepGroup.innerHTML = `
                                         <div style="flex: 1;">
                                             <div style="font-weight: bold; margin-bottom: 4px;">${stepIndex}. ${stepText}</div>
-                                            <img src="${e.target.result}" class="step-image" onclick="showImageModal('${e.target.result}')" title="Cliquer pour agrandir">
+                                            <img src="${e.target.result}" class="step-image" onclick="showImageModal(\`${e.target.result.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)" title="Cliquer pour agrandir">
                                         </div>
                                         <button type="button" onclick="removeModalStep(this)" style="background: none; border: none; color: #e74c3c; cursor: pointer; padding: 4px;">✕</button>
                                     `;
